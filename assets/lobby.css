@@ -1,0 +1,482 @@
+/* =====================================================================
+   半信半疑文庫 ― ロビー・棚共通スタイル
+   ロウソク照明の暗背景に金の罫。論考本体は各自の CSS を保持するため
+   ここはあくまで「書架の通路」のためのスタイル。
+   ===================================================================== */
+
+:root {
+  --ink:           #100e0c;
+  --ink-2:         #16130f;
+  --ink-3:         #1c1813;
+  --ink-card:      #1a1611;
+  --parchment:     #e9e3d4;
+  --parchment-dim: #b3ab97;
+  --parchment-faint: #7a7361;
+  --gold:          #b89150;
+  --gold-bright:   #d4b878;
+  --gold-faint:    rgba(184, 145, 80, 0.25);
+  --ember:         #cf8a4a;
+  --verdigris:     #6fa39a;
+  --ash:           #9aa0a4;
+  --measure:       64rem;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ink);
+  color: var(--parchment);
+  font-family: "Shippori Mincho", "Noto Serif JP", serif;
+  font-weight: 400;
+  line-height: 1.9;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* candlelit depth + paper grain */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(120% 80% at 50% 6%, rgba(184,145,80,.10), rgba(0,0,0,0) 55%),
+    radial-gradient(140% 120% at 50% 120%, rgba(0,0,0,.6), rgba(0,0,0,0) 60%);
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: .035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.wrap {
+  position: relative;
+  z-index: 2;
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 1.8rem;
+}
+
+/* ====== Header ====== */
+header.site {
+  padding: 6.5rem 0 3.2rem;
+  text-align: center;
+}
+
+.breadcrumb {
+  font-family: "EB Garamond", serif;
+  font-size: .82rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  flex-wrap: wrap;
+}
+.breadcrumb a {
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px dotted transparent;
+  transition: border-color .2s;
+}
+.breadcrumb a:hover { border-bottom-color: var(--gold-bright); }
+.breadcrumb .sep { color: var(--parchment-faint); }
+.breadcrumb .here { color: var(--parchment-dim); }
+
+.kicker {
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: .95rem;
+  letter-spacing: .08em;
+  color: var(--ember);
+  margin-bottom: 1.1rem;
+}
+
+h1.site-title {
+  font-size: clamp(2.6rem, 7vw, 4.2rem);
+  font-weight: 800;
+  line-height: 1.24;
+  letter-spacing: .02em;
+  margin-bottom: 1.2rem;
+  text-shadow: 0 1px 0 rgba(0,0,0,.6);
+}
+
+.tagline {
+  font-size: clamp(1rem, 2.2vw, 1.15rem);
+  color: var(--parchment-dim);
+  line-height: 1.85;
+  max-width: 36rem;
+  margin: 0 auto 1.8rem;
+}
+
+.rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem auto 3rem;
+  max-width: 36rem;
+  color: var(--gold);
+}
+.rule::before,
+.rule::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.rule .mark {
+  font-family: "EB Garamond", serif;
+  font-size: 1.1rem;
+  letter-spacing: .3em;
+}
+
+/* ====== Section blocks ====== */
+section.block { padding: 2.6rem 0; }
+section.block + section.block { border-top: 1px solid var(--gold-faint); }
+
+.block-head {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+.block-head .num {
+  font-family: "EB Garamond", serif;
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: var(--gold);
+  line-height: 1;
+}
+.block-head h2 {
+  font-size: clamp(1.5rem, 3.6vw, 2rem);
+  font-weight: 700;
+  line-height: 1.4;
+}
+.block-head .lede {
+  width: 100%;
+  font-size: 1rem;
+  color: var(--parchment-dim);
+  line-height: 1.85;
+  margin-top: .4rem;
+}
+
+/* ====== Wing cards (lobby) ====== */
+.wings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.4rem;
+  margin: 2rem 0 4rem;
+}
+.wing {
+  display: block;
+  background: linear-gradient(180deg, var(--ink-2), var(--ink-3));
+  border: 1px solid var(--gold-faint);
+  border-radius: 4px;
+  padding: 2.3rem 2rem 2rem;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: border-color .25s, transform .25s, box-shadow .25s;
+}
+.wing::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(184,145,80,.15);
+  border-radius: 3px;
+  pointer-events: none;
+  transition: border-color .25s;
+}
+.wing:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0,0,0,.4);
+}
+.wing:hover::before { border-color: rgba(212,184,120,.4); }
+
+.wing .kind {
+  font-family: "EB Garamond", serif;
+  font-size: .78rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: .9rem;
+  display: block;
+}
+.wing h3 {
+  font-size: 1.55rem;
+  font-weight: 700;
+  margin-bottom: .6rem;
+}
+.wing .wing-sub {
+  font-size: .95rem;
+  color: var(--parchment-dim);
+  line-height: 1.8;
+  margin-bottom: 1.2rem;
+}
+.wing .enter {
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: .9rem;
+  color: var(--ember);
+  letter-spacing: .05em;
+}
+.wing .enter::after { content: " →"; }
+
+/* ====== Shelf cards (essay index) ====== */
+.shelves {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin: 1rem 0 3rem;
+}
+.shelf-card {
+  display: block;
+  background: var(--ink-card);
+  border: 1px solid var(--gold-faint);
+  border-radius: 3px;
+  padding: 1.7rem 1.6rem 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .25s, transform .25s;
+}
+.shelf-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+.shelf-card .shelf-no {
+  font-family: "EB Garamond", serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--gold);
+  display: inline-block;
+  margin-right: .6rem;
+  vertical-align: baseline;
+}
+.shelf-card .shelf-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: inline-block;
+}
+.shelf-card .shelf-axis {
+  font-size: .9rem;
+  color: var(--parchment-dim);
+  line-height: 1.8;
+  margin: .7rem 0 1.1rem;
+}
+.shelf-card .shelf-count {
+  font-family: "EB Garamond", serif;
+  font-size: .82rem;
+  letter-spacing: .12em;
+  color: var(--parchment-faint);
+}
+.shelf-card .shelf-count b { color: var(--ember); font-weight: 500; }
+
+/* ====== Book list (shelf page) ====== */
+.shelf-intro {
+  font-size: 1.04rem;
+  color: var(--parchment);
+  line-height: 1.95;
+  margin: 1rem 0 2.4rem;
+}
+.shelf-intro p { margin-bottom: 1.2rem; }
+
+.books {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.1rem;
+  margin: 1rem 0 2.6rem;
+}
+.book {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  gap: 1.3rem;
+  background: var(--ink-card);
+  border: 1px solid var(--gold-faint);
+  border-radius: 3px;
+  padding: 1.4rem 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .25s, background .25s;
+}
+.book:hover { border-color: var(--gold); background: var(--ink-3); }
+.book .spine {
+  font-family: "EB Garamond", serif;
+  font-size: 1.7rem;
+  color: var(--gold);
+  line-height: 1;
+  padding-top: .4rem;
+  border-right: 1px solid var(--gold-faint);
+}
+.book .info h4 {
+  font-size: 1.18rem;
+  font-weight: 700;
+  margin-bottom: .35rem;
+  line-height: 1.4;
+}
+.book .info .sub {
+  font-size: .92rem;
+  color: var(--parchment-dim);
+  line-height: 1.75;
+  margin-bottom: .55rem;
+}
+.book .info .meta {
+  font-family: "EB Garamond", serif;
+  font-size: .8rem;
+  letter-spacing: .08em;
+  color: var(--parchment-faint);
+}
+
+.book.planned {
+  cursor: default;
+  opacity: .55;
+  pointer-events: none;
+}
+.book.planned .spine { color: var(--parchment-faint); }
+.book.planned .info h4::after {
+  content: " ― 予定";
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: .75rem;
+  letter-spacing: .1em;
+  color: var(--ash);
+  font-weight: 400;
+  margin-left: .3rem;
+}
+
+/* ====== Tool cards (tool index) ====== */
+.tools-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.2rem;
+  margin: 1rem 0 3rem;
+}
+.tool {
+  display: block;
+  background: var(--ink-card);
+  border: 1px solid rgba(111,163,154,.25);
+  border-radius: 3px;
+  padding: 1.5rem 1.6rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .25s, transform .25s;
+}
+.tool:hover { border-color: var(--verdigris); transform: translateY(-2px); }
+.tool .kind {
+  font-family: "EB Garamond", serif;
+  font-size: .78rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--verdigris);
+  display: block;
+  margin-bottom: .6rem;
+}
+.tool h4 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: .5rem;
+}
+.tool .tool-sub {
+  font-size: .94rem;
+  color: var(--parchment-dim);
+  line-height: 1.78;
+  margin-bottom: .8rem;
+}
+.tool .tool-link {
+  font-family: "EB Garamond", serif;
+  font-size: .85rem;
+  color: var(--verdigris);
+  letter-spacing: .04em;
+  word-break: break-all;
+}
+.tool .tool-link::before { content: "↗ "; }
+
+/* ====== Related shelves (shelf page footer) ====== */
+.relateds {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .9rem;
+  margin: 1.4rem 0 2rem;
+}
+.related-shelf {
+  display: block;
+  padding: .9rem 1.1rem;
+  border: 1px solid var(--gold-faint);
+  border-radius: 3px;
+  text-decoration: none;
+  color: inherit;
+  font-size: .92rem;
+  transition: border-color .25s, background .25s;
+}
+.related-shelf:hover { border-color: var(--gold); background: var(--ink-2); }
+.related-shelf .rno {
+  font-family: "EB Garamond", serif;
+  color: var(--gold);
+  font-size: .82rem;
+  letter-spacing: .14em;
+  margin-right: .5rem;
+}
+
+/* ====== Footer ====== */
+footer.site {
+  padding: 4rem 0 5rem;
+  text-align: center;
+  border-top: 1px solid var(--gold-faint);
+  margin-top: 4rem;
+}
+.signature {
+  font-family: "EB Garamond", serif;
+  font-size: .85rem;
+  letter-spacing: .18em;
+  color: var(--parchment-faint);
+}
+.signature .lib { color: var(--gold); }
+.colophon-note {
+  font-size: .85rem;
+  color: var(--parchment-faint);
+  line-height: 1.85;
+  max-width: 32rem;
+  margin: 0 auto 1.2rem;
+  font-style: italic;
+}
+
+/* ====== Reveal animation ====== */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.in { opacity: 1; transform: none; }
+
+/* ====== Reading progress bar (kept for consistency with essays) ====== */
+#bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0;
+  z-index: 50;
+  background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+  box-shadow: 0 0 8px rgba(212,184,120,.5);
+}
+
+/* ====== Mobile ====== */
+@media (max-width: 640px) {
+  header.site { padding: 4.5rem 0 2.2rem; }
+  .wings { grid-template-columns: 1fr; }
+  .shelves { grid-template-columns: 1fr; }
+  .relateds { grid-template-columns: 1fr; }
+  .book { grid-template-columns: 3rem 1fr; gap: 1rem; padding: 1.2rem 1.2rem; }
+  .book .spine { font-size: 1.4rem; padding-top: .3rem; }
+}

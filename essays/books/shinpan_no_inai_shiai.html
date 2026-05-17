@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>審判のいない試合 ― 正しさのすれ違いはなぜ解けないのか</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#100e0c;
+    --ink-2:#16130f;
+    --ink-3:#1c1813;
+    --parchment:#e9e3d4;
+    --parchment-dim:#b3ab97;
+    --parchment-faint:#7a7361;
+    --gold:#b89150;
+    --gold-bright:#d4b878;
+    --ember:#cf8a4a;       /* Frame A ― 当事者 / 温 */
+    --verdigris:#6fa39a;   /* Frame B ― 構造 / 冷 */
+    --ash:#9aa0a4;         /* §4 ― 自己精査 / 無彩の光 */
+    --measure:42rem;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--parchment);
+    font-family:"Shippori Mincho",serif;
+    font-weight:400;
+    line-height:1.96;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  /* candlelit depth + grain */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(120% 80% at 50% 6%, rgba(184,145,80,.10), rgba(0,0,0,0) 55%),
+               radial-gradient(140% 120% at 50% 120%, rgba(0,0,0,.6), rgba(0,0,0,0) 60%);
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* reading progress */
+  #bar{position:fixed;top:0;left:0;height:2px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--gold-bright));
+    box-shadow:0 0 8px rgba(212,184,120,.5);}
+
+  .wrap{position:relative;z-index:2;max-width:var(--measure);margin:0 auto;padding:0 1.6rem;}
+
+  /* ───────── header ───────── */
+  header{padding:7.5rem 0 3.5rem;}
+  .breadcrumb{
+    font-family:"EB Garamond",serif;font-size:.82rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--gold);margin-bottom:2.6rem;
+    display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;
+  }
+  .breadcrumb .sep{color:var(--parchment-faint);}
+  .breadcrumb .here{color:var(--parchment-dim);}
+  .breadcrumb a{color:var(--gold);text-decoration:none;border-bottom:1px dotted transparent;transition:border-color .2s;}
+  .breadcrumb a:hover{border-bottom-color:var(--gold-bright);}
+  .kicker{
+    font-size:.92rem;color:var(--ember);letter-spacing:.04em;
+    margin-bottom:1.1rem;font-weight:500;
+  }
+  h1{
+    font-size:clamp(2.7rem,8vw,4.3rem);font-weight:800;line-height:1.24;
+    letter-spacing:.01em;margin-bottom:1.4rem;
+    text-shadow:0 1px 0 rgba(0,0,0,.6);
+  }
+  .subtitle{
+    font-size:clamp(1.05rem,2.6vw,1.3rem);font-weight:500;color:var(--parchment-dim);
+    line-height:1.7;margin-bottom:2.6rem;
+  }
+  .lead{
+    font-family:"EB Garamond",serif;font-style:italic;
+    font-size:1.18rem;line-height:1.8;color:var(--parchment);
+    border-left:2px solid var(--gold);padding:.2rem 0 .2rem 1.5rem;
+    margin-bottom:2.8rem;
+  }
+  .lead .jp{font-family:"Shippori Mincho",serif;font-style:normal;}
+  .byline{
+    font-family:"EB Garamond",serif;font-size:.9rem;letter-spacing:.1em;
+    color:var(--parchment-faint);text-transform:uppercase;
+  }
+
+  /* ornamental rule */
+  .rule{
+    display:flex;align-items:center;justify-content:center;gap:1rem;
+    margin:1rem 0 .5rem;color:var(--gold);
+  }
+  .rule::before,.rule::after{content:"";height:1px;flex:1;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+  .rule .mark{font-family:"EB Garamond",serif;font-size:1.1rem;letter-spacing:.3em;
+    transform:translateX(.15em);}
+
+  /* ───────── sections ───────── */
+  section{padding:3.4rem 0;}
+  .sec-head{margin-bottom:1.9rem;}
+  .sec-num{
+    font-family:"EB Garamond",serif;font-size:3.4rem;font-weight:500;
+    line-height:1;color:var(--parchment-faint);display:block;margin-bottom:.5rem;
+  }
+  .sec-label{
+    font-family:"EB Garamond",serif;font-size:.78rem;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--gold);display:block;margin-bottom:.7rem;
+  }
+  h2{font-size:clamp(1.55rem,4.3vw,2.1rem);font-weight:700;line-height:1.4;}
+
+  p{margin-bottom:1.4rem;font-size:1.06rem;}
+  p .em{color:var(--gold-bright);font-weight:600;font-style:normal;}
+  .small-caps{font-family:"EB Garamond",serif;font-style:italic;color:var(--parchment-dim);}
+
+  /* frame-coded sections */
+  .frame{
+    border-left:2px solid var(--fc,var(--gold));
+    padding-left:1.6rem;
+  }
+  .frame .sec-num{color:var(--fc);}
+  .frame .sec-label{color:var(--fc);}
+  .frame-tag{
+    display:inline-flex;align-items:baseline;gap:.5rem;
+    font-family:"EB Garamond",serif;font-size:.8rem;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--fc);
+    border:1px solid var(--fc);border-radius:2px;
+    padding:.28rem .7rem;margin-bottom:1.4rem;
+  }
+  .frame-tag b{font-weight:600;font-size:.95rem;letter-spacing:.05em;}
+  .frame-a{--fc:var(--ember);}
+  .frame-b{--fc:var(--verdigris);}
+
+  blockquote{
+    font-family:"EB Garamond",serif;font-style:italic;
+    font-size:1.14rem;line-height:1.74;color:var(--parchment);
+    margin:1.8rem 0;padding-left:1.4rem;border-left:1px solid var(--gold);
+  }
+  blockquote .jp{font-family:"Shippori Mincho",serif;font-style:normal;}
+
+  /* example list (§0) */
+  .specimens{
+    margin:1.7rem 0;border-top:1px solid rgba(184,145,80,.25);
+  }
+  .specimen{
+    display:grid;grid-template-columns:auto 1fr;gap:1.1rem;
+    padding:1.05rem 0;border-bottom:1px solid rgba(184,145,80,.18);
+    align-items:start;
+  }
+  .specimen .idx{
+    font-family:"EB Garamond",serif;font-size:1.1rem;color:var(--gold);
+    line-height:1.4;
+  }
+  .specimen .body{font-size:1.01rem;line-height:1.78;}
+  .specimen .body b{color:var(--parchment);font-weight:600;}
+  .specimen .vs{color:var(--parchment-faint);font-style:italic;
+    font-family:"EB Garamond",serif;padding:0 .25rem;}
+
+  /* §3 contrast columns */
+  .contrast{
+    display:grid;grid-template-columns:1fr 1fr;gap:1px;
+    background:rgba(184,145,80,.28);
+    border:1px solid rgba(184,145,80,.28);border-radius:3px;
+    margin:2rem 0;overflow:hidden;
+  }
+  .contrast .col{background:var(--ink-2);padding:1.6rem 1.4rem;}
+  .contrast .col.a{border-top:3px solid var(--ember);}
+  .contrast .col.b{border-top:3px solid var(--verdigris);}
+  .contrast h3{
+    font-family:"EB Garamond",serif;font-size:.82rem;letter-spacing:.16em;
+    text-transform:uppercase;margin-bottom:.5rem;
+  }
+  .contrast .col.a h3{color:var(--ember);}
+  .contrast .col.b h3{color:var(--verdigris);}
+  .contrast .verdict{font-weight:600;font-size:1.08rem;margin-bottom:.7rem;line-height:1.5;}
+  .contrast .col p{font-size:.97rem;line-height:1.74;margin-bottom:0;color:var(--parchment-dim);}
+
+  /* §4 self-scrutiny panel */
+  .scrutiny{
+    background:linear-gradient(180deg,var(--ink-3),var(--ink-2));
+    border:1px solid rgba(154,160,164,.3);
+    border-radius:4px;padding:2.4rem 2rem 1.6rem;margin-top:.6rem;
+    position:relative;
+  }
+  .scrutiny::before{
+    content:"";position:absolute;inset:5px;border:1px solid rgba(154,160,164,.16);
+    border-radius:3px;pointer-events:none;
+  }
+  .scrutiny .sec-num,.scrutiny .sec-label{color:var(--ash);}
+  .scrutiny h2{color:var(--parchment);}
+  .doubt{
+    display:grid;grid-template-columns:auto 1fr;gap:1.2rem;
+    padding:1.3rem 0;border-top:1px solid rgba(154,160,164,.18);
+  }
+  .doubt:first-of-type{border-top:1px solid rgba(154,160,164,.3);margin-top:1.6rem;}
+  .doubt .n{
+    font-family:"EB Garamond",serif;font-size:1.7rem;color:var(--ash);
+    line-height:1;font-weight:500;
+  }
+  .doubt .t{font-size:1.01rem;line-height:1.82;}
+  .doubt .t b{color:var(--ash);font-weight:600;}
+
+  .closing{
+    font-family:"EB Garamond",serif;font-style:italic;font-size:1.1rem;
+    line-height:1.8;color:var(--parchment-dim);margin-top:2rem;
+    padding-top:1.6rem;border-top:1px solid rgba(154,160,164,.2);
+  }
+  .closing .jp{font-family:"Shippori Mincho",serif;font-style:normal;}
+
+  /* ───────── footer / colophon ───────── */
+  footer{padding:4rem 0 6rem;}
+  .colophon{
+    border:1px solid rgba(184,145,80,.3);border-radius:4px;
+    background:var(--ink-2);padding:2rem 1.8rem;
+  }
+  .colophon .ctitle{
+    font-family:"EB Garamond",serif;font-size:.82rem;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;
+    display:flex;align-items:center;gap:.8rem;
+  }
+  .colophon .ctitle::after{content:"";flex:1;height:1px;background:rgba(184,145,80,.3);}
+  .meta-row{
+    display:grid;grid-template-columns:7rem 1fr;gap:1rem;
+    padding:.85rem 0;border-bottom:1px solid rgba(184,145,80,.14);
+    align-items:start;
+  }
+  .meta-row:last-of-type{border-bottom:none;}
+  .meta-row .k{
+    font-family:"EB Garamond",serif;font-size:.82rem;letter-spacing:.06em;
+    color:var(--parchment-faint);text-transform:uppercase;line-height:1.7;
+  }
+  .meta-row .v{font-size:.97rem;line-height:1.7;color:var(--parchment-dim);}
+  .tags{display:flex;flex-wrap:wrap;gap:.45rem;}
+  .tag{
+    font-size:.83rem;color:var(--parchment);background:var(--ink-3);
+    border:1px solid rgba(184,145,80,.3);border-radius:2px;padding:.2rem .6rem;
+  }
+  .related{
+    display:block;color:var(--verdigris);text-decoration:none;
+    border:1px solid rgba(111,163,154,.35);border-radius:3px;
+    padding:.7rem .9rem;transition:background .2s,border-color .2s;
+  }
+  .related:hover{background:rgba(111,163,154,.08);border-color:var(--verdigris);}
+  .related .rk{
+    font-family:"EB Garamond",serif;font-size:.74rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--parchment-faint);display:block;margin-bottom:.2rem;
+  }
+  .related .rt{font-weight:600;}
+  .related .rd{font-size:.86rem;color:var(--parchment-dim);}
+  .sig{
+    text-align:center;margin-top:2.6rem;
+    font-family:"EB Garamond",serif;font-size:.84rem;letter-spacing:.16em;
+    color:var(--parchment-faint);
+  }
+  .sig .lib{color:var(--gold);}
+
+  /* reveal animation */
+  .reveal{opacity:0;transform:translateY(22px);
+    transition:opacity .8s ease,transform .8s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media(max-width:560px){
+    header{padding:5rem 0 2.5rem;}
+    .contrast{grid-template-columns:1fr;}
+    .meta-row{grid-template-columns:1fr;gap:.3rem;}
+    .sec-num{font-size:2.8rem;}
+  }
+</style>
+</head>
+<body>
+<div id="bar"></div>
+
+<div class="wrap">
+
+  <header>
+    <div class="breadcrumb reveal">
+      <a href="../../index.html">本館</a><span class="sep">&#9656;</span>
+      <a href="../index.html">文庫</a><span class="sep">&#9656;</span>
+      <a href="../shelves/02_rightness.html">棚02 「正しさ」のすれ違い</a><span class="sep">&#9656;</span>
+      <span class="here">No.01</span>
+    </div>
+    <div class="kicker reveal">対立の力学についての論考</div>
+    <h1 class="reveal">審判のいない試合</h1>
+    <p class="subtitle reveal">なぜ「正しさ」をめぐる対立は、いつまでも終わらないのか</p>
+    <p class="lead reveal"><span class="jp">同じ「正しい」という言葉を握りしめた二人が、永遠にかみ合わないことがある。それは、どちらかが愚かだからではない。二人が、別々の競技をしているからだ。</span></p>
+    <div class="byline reveal">半信半疑文庫 &mdash; 認識のクセ シリーズ</div>
+  </header>
+
+  <div class="rule reveal"><span class="mark">&#10070;</span></div>
+
+  <!-- ───────── §0 ───────── -->
+  <section class="reveal">
+    <div class="sec-head">
+      <span class="sec-num">00</span>
+      <span class="sec-label">扱う現象</span>
+      <h2>終わらない対立というものがある</h2>
+    </div>
+    <p>ある対立を思い浮かべてほしい。双方とも誠実で、頭も悪くなく、相手の言い分にちゃんと耳を傾けている。それでも議論が終わらない。一時間やっても、一年やっても、十年やっても、決着しない。世の中には、そういう種類の対立が確かに存在する。</p>
+    <p>ここではまず、価値判断を一切抜いて、現象だけを並べておく。なぜそうなるのかは、まだ言わない。観察できる事実の層に留まる。</p>
+    <div class="specimens">
+      <div class="specimen">
+        <span class="idx">i</span>
+        <span class="body"><b>攻略をめぐって。</b>「そこは最適解の動きをすべきだ」<span class="vs">／</span>「いや、自分は好きなように遊びたい」</span>
+      </div>
+      <div class="specimen">
+        <span class="idx">ii</span>
+        <span class="body"><b>言葉づかいをめぐって。</b>「それは文法的に正しくない」<span class="vs">／</span>「でも、こう言ったほうが実際に通じるし自然だ」</span>
+      </div>
+      <div class="specimen">
+        <span class="idx">iii</span>
+        <span class="body"><b>ネタバレをめぐって。</b>「起きた出来事を述べただけだ」<span class="vs">／</span>「あなたは私の体験そのものを壊した」</span>
+      </div>
+    </div>
+    <p>どれも、賢者と愚者の戦いではない。多くの場合、両者ともそれなりに筋が通っている。だからこそ厄介で、そして終わらない。この論考が立てる問いはひとつだ ―― <span class="em">なぜ、これらは解けないのか。</span></p>
+  </section>
+
+  <!-- ───────── §1 Frame A ───────── -->
+  <section class="frame frame-a reveal">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <span class="frame-tag"><span>Frame</span><b>A</b></span>
+      <h2>解けないのは「当事者」の問題だ</h2>
+    </div>
+    <p>もっとも素朴で、もっとも日常的な説明から始めよう。議論が終わらないのは ―― どちらかが頑固だからだ。理解が足りないからだ。あるいは本当は分かっているのに、負けを認めたくないからだ。</p>
+    <p>この枠組みで見ると、終わらない対立とは<span class="em">「能力か誠実さの欠如」</span>そのものになる。解けないのは欠陥のしるしであり、その欠陥はどちらか一方にある。</p>
+    <p>ここで見落としてはいけないことがある。この枠を採用した瞬間、処方箋が自動的に決まってしまう。すなわち ―― <span class="small-caps">正しい側が、間違った側を説得し、矯正する。</span>対立のゴールは「相手を正しい場所へ連れていくこと」になる。</p>
+    <p>この見方は、別の棚に収めた論考 ―― 配信の視聴者が画面の外から「こうしろ」と指示を投げ続ける心理を扱ったもの ―― と、ほとんど同じ骨格をしている。あれもまた「相手はまだ正しい場所にいない、だから導く」という構図だった。フレームAとは、いわば<span class="em">すれ違いを"指示厨的に"見る枠組み</span>である。</p>
+    <p>誤解しないでほしい。フレームAは、しばしば正しい。世の中の対立には、本当に一方が事実を取り違えているだけ、というものが数多くある。そういう対立は、説得と訂正で実際に解ける。問題は、この枠が静かに前提していることのほうだ ―― <span class="em">「正しい側」が必ず存在する</span>、という前提である。</p>
+  </section>
+
+  <!-- ───────── §2 Frame B ───────── -->
+  <section class="frame frame-b reveal">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <span class="frame-tag"><span>Frame</span><b>B</b></span>
+      <h2>解けないのは「構造」の問題だ</h2>
+    </div>
+    <p>同じ現象を、別の枠で見直す。</p>
+    <p>双方は「正しい」という同じ一語を使っている。だから対立は、表面上は「同じ問いに対する違う答え」のように見える。だが、よく聞くとそうではない。攻略の例なら、片方は<span class="em">効率の正しさ</span>を語り、もう片方は<span class="em">体験の正しさ</span>を語っている。二人は同じ問いに違う答えを出しているのではない。<span class="em">そもそも別の問いに答えている。</span></p>
+    <p>ここで鍵になるのは、「正しさ」には種類があり、種類ごとに<span class="em">裁定者</span>が違う、という事実だ。</p>
+    <blockquote><span class="jp">事実の正しさには、現実と証拠という裁定者がいる。論理の正しさには、推論の規則という裁定者がいる。規則の正しさ ―― ゲームのルール、文法 ―― には、その規約という裁定者がいる。</span></blockquote>
+    <p>それぞれの領域の内側でなら、対立は決着しうる。裁定者に問い合わせればいいからだ。ところが、<span class="em">異なる領域どうしがぶつかったとき</span>、両者がともに認める<span class="em">上位の裁定者が、どこにも存在しない</span>。効率という物差しと、体験という物差し。その両方を裁ける第三の物差しは、用意されていない。</p>
+    <p>だから、当事者がどれだけ賢く、どれだけ誠実でも、対立は解けない。<span class="em">解けないのは欠陥ではない。</span>その対立が、そもそも「解ける種類の問題」ではないからだ。それは判定を待っている試合ではない ―― 二人の選手が、それぞれ別のルールブックを持って入場してきた、<span class="em">審判のいない試合</span>なのだ。</p>
+  </section>
+
+  <!-- ───────── §3 Contrast ───────── -->
+  <section class="reveal">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <span class="sec-label">フレーム対比</span>
+      <h2>「解く」のではなく「翻訳する」</h2>
+    </div>
+    <p>同じひとつの現象 ―― 終わらない対立 ―― を見ているのに、フレームAとフレームBでは、出てくる処方箋が正反対になる。</p>
+    <div class="contrast">
+      <div class="col a">
+        <h3>Frame A &mdash; 当事者</h3>
+        <p class="verdict">説得し、矯正せよ。</p>
+        <p>解けないのは誰かの欠陥。ゴールは相手を正しい場所へ連れていくこと。前提は「正しい側が存在する」。</p>
+      </div>
+      <div class="col b">
+        <h3>Frame B &mdash; 構造</h3>
+        <p class="verdict">勝敗ではなく、翻訳せよ。</p>
+        <p>解けないのは構造のしるし。ゴールは互いがどの正しさの座標に立つかを確かめること。前提は「上位の裁定者は不在」。</p>
+      </div>
+    </div>
+    <p>この論考の知的な山場はここにある。<span class="em">「すれ違いは解くものだ」という前提それ自体</span>が、ひとつの錯覚をはらんでいる。その前提は、あらゆる対立を"事実型の対立"のテンプレート ―― 証拠を突き合わせれば決着がつくタイプ ―― に当てはめてしまう。だが、正しさのすれ違いの多くは、そもそもその型をしていない。</p>
+    <p>では「翻訳」とは何をすることか。それは、<span class="em">「あなたは間違っている」を「あなたは別の正しさを見ている」に置き換える</span>作業だ。これで対立が消えるわけではない。消えはしない。だが、対立の<span class="em">性質</span>が変わる。問いが「どちらが勝つか」から「私たちは何をめぐって違っているのか」へと移る。そして後者の問いには ―― 前者と違って ―― 答えが出ることがある。</p>
+  </section>
+
+  <!-- ───────── §4 Self-scrutiny ───────── -->
+  <section class="reveal">
+    <div class="scrutiny">
+      <div class="sec-head">
+        <span class="sec-num">04</span>
+        <span class="sec-label">自己バイアスの開示</span>
+        <h2>この論考が立っている、危うい場所</h2>
+      </div>
+      <p>ここで、論考はそれ自身に刃を向ける。読み終える前に、この文章自身の偏りを点検しておきたい。</p>
+      <p>この論考は、明らかにフレームBに肩入れしている。「翻訳せよ」という結末は、フレームBから自然に出てくる結論であって、中立な観察の結果ではない。その偏りには、少なくとも三つの危うさがある。</p>
+
+      <div class="doubt">
+        <span class="n">i</span>
+        <span class="t"><b>相対主義への抜け道。</b>「すべてはただの座標の違いだ」と言いすぎると、本当に決着すべき対立 ―― 事実の取り違え、倫理的な不正 ―― までもが「立場の違い」として流されてしまう。地球が丸いか平らかは、座標の違いではない。フレームAが端的に正しい対立は、確かに存在する。にもかかわらず、この論考はフレームAをやや雑に「指示厨的」と名指した。その名指しそのものが、すでにフレームBへのひいきだ。</span>
+      </div>
+      <div class="doubt">
+        <span class="n">ii</span>
+        <span class="t"><b>書き手の偏り。</b>これを書いている人間は、「半信半疑」を価値として大切にしている。判断を宙づりにすること、結論を急がないことを、もともと好む性分だ。だとすれば「解けないものは解けない」という結論は、書き手にとって<span class="em" style="color:var(--ash)">心地よすぎる</span>。心地よく着地できる結論は、それゆえに疑ったほうがいい。</span>
+      </div>
+      <div class="doubt">
+        <span class="n">iii</span>
+        <span class="t"><b>メタな循環。</b>「正しさには種類がある」というこの分類 ―― 事実・論理・倫理・効率・規則・体験 ―― それ自体が、ひとつの切り分け方にすぎない。この区分が唯一の正解だと保証してくれる裁定者も、また、どこにもいない。論考は、自分が批判した構造の中に、自分でも立っている。</span>
+      </div>
+
+      <p class="closing"><span class="jp">だからこの論考は「正しさのすれ違いの、正しい説明」ではない。ひとつのフレームの、ひとつの適用例にすぎない。読み終えたあなたが持ち帰るべきものは、「対立は翻訳すべし」という教訓ではなく、もっと小さな問いのほうかもしれない ―― いま自分は、どのフレームでこの対立を見ているのだろう、と。</span></p>
+      <p class="closing" style="border-top:none;padding-top:.4rem;margin-top:.2rem;"><span class="jp">（この「かもしれない」も、たぶん、半信半疑の癖だ。）</span></p>
+    </div>
+  </section>
+
+  <div class="rule reveal"><span class="mark">&#10070;</span></div>
+
+  <!-- ───────── colophon ───────── -->
+  <footer class="reveal">
+    <div class="colophon">
+      <div class="ctitle">奥付 &mdash; この一冊について</div>
+
+      <div class="meta-row">
+        <div class="k">棚</div>
+        <div class="v">認識のクセ &#9656; 「正しさ」のすれ違い &#9656; No.01（棚の土台石）</div>
+      </div>
+      <div class="meta-row">
+        <div class="k">扱った機構</div>
+        <div class="v"><div class="tags">
+          <span class="tag">規範領域の混同</span>
+          <span class="tag">上位裁定者の不在</span>
+          <span class="tag">カテゴリーミス</span>
+          <span class="tag">解の型の取り違え</span>
+        </div></div>
+      </div>
+      <div class="meta-row">
+        <div class="k">論考の形式</div>
+        <div class="v">複数フレーム並走方式 ―― §0で現象を価値判断抜きに記述し、§1・§2で異なる枠組みを走らせ、§3で結論の分岐を対比、§4で論考自身の偏りを開示する。半信半疑文庫の共通骨格。</div>
+      </div>
+      <div class="meta-row">
+        <div class="k">関連論考</div>
+        <div class="v">
+          <a class="related" href="./shijichu_psychology.html">
+            <span class="rk">棚：ラベルで人を括る</span>
+            <span class="rt">指示厨の心理学</span> &mdash;
+            <span class="rd">フレームAが前提する「導く側／導かれる側」の心理を扱った一冊。本論考の§1と地続き。</span>
+          </a>
+        </div>
+      </div>
+      <div class="meta-row">
+        <div class="k">参照の下敷き</div>
+        <div class="v">ヒュームの法則（is&ndash;ought問題）／ 事実と価値の区別 ／ 観察の理論負荷性。いずれも結論の典拠ではなく、思考の足場として。</div>
+      </div>
+    </div>
+    <div class="sig">編 &mdash; <span class="lib">Librarian</span> &middot; 半信半疑文庫</div>
+  </footer>
+
+</div>
+
+<script>
+  // reading progress
+  const bar=document.getElementById('bar');
+  const onScroll=()=>{
+    const h=document.documentElement;
+    const max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max*100):0)+'%';
+  };
+  document.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+
+  // staggered reveal
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}
+    });
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{
+    el.style.transitionDelay=Math.min(i*60,240)+'ms';
+    io.observe(el);
+  });
+</script>
+</body>
+</html>

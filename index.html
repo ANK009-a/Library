@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>半信半疑文庫 ― Library</title>
+<meta name="description" content="縫い目を見せる論考と、それを支える道具置き場。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/lobby.css">
+</head>
+<body>
+<div id="bar"></div>
+
+<div class="wrap">
+
+  <header class="site">
+    <div class="breadcrumb reveal">
+      <span class="here">本館 ― ロビー</span>
+    </div>
+    <p class="kicker reveal">A private library of doubts</p>
+    <h1 class="site-title reveal">半信半疑文庫</h1>
+    <p class="tagline reveal">縫い目を見せる論考と、それを支える道具置き場。<br>断言の代わりに、判断の宙づりを並べておくための小さな書架。</p>
+    <div class="rule reveal"><span class="mark">&#10070;</span></div>
+  </header>
+
+  <section class="block reveal">
+    <p class="tagline" style="margin-bottom:0;">
+      この館には二つの翼がある。<br>
+      ひとつは認識のクセを巡る論考の<em style="color:var(--gold-bright);font-style:normal;">文庫</em>。<br>
+      もうひとつは、観察と制作を補うための<em style="color:var(--verdigris);font-style:normal;">ツール棚</em>。
+    </p>
+
+    <div class="wings">
+      <a class="wing reveal" href="essays/index.html">
+        <span class="kind">East Wing &middot; 文庫</span>
+        <h3>認識のクセを巡る書架</h3>
+        <p class="wing-sub">同じ現象を複数のフレームで見直す論考集。題材ではなく「認識の機構」で棚分けされている。表面のジャンルが違っても、同じバイアスを扱う本は同じ棚に並ぶ。</p>
+        <span class="enter">書架へ入る</span>
+      </a>
+
+      <a class="wing reveal" href="tools/index.html">
+        <span class="kind">West Wing &middot; ツール棚</span>
+        <h3>制作と観察を補う実用書</h3>
+        <p class="wing-sub">Maya・ゲーム・データ整理など、作業の枠を快適に整える道具たち。論考が観察の道具なら、こちらは手仕事の道具。</p>
+        <span class="enter">棚を覗く</span>
+      </a>
+    </div>
+  </section>
+
+  <footer class="site reveal">
+    <p class="colophon-note">
+      この館の蔵書はすべて、半信半疑の判断保留から始まる。<br>
+      断言の代わりに「いま自分はどのフレームでこれを見ているか」を、本ごとに開示することを共通の作法とする。
+    </p>
+    <p class="signature">編 &mdash; <span class="lib">Librarian</span></p>
+  </footer>
+
+</div>
+
+<script>
+  const bar = document.getElementById('bar');
+  const onScroll = () => {
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max * 100) : 0) + '%';
+  };
+  document.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: .12 });
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = Math.min(i * 70, 350) + 'ms';
+    io.observe(el);
+  });
+</script>
+</body>
+</html>
