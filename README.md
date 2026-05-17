@@ -1,7 +1,7 @@
 # 半信半疑文庫 ― Library
 
-縫い目を見せる論考と、それを支える道具置き場。
-断言の代わりに「判断の宙づり」を並べておくための、私設の小さな書架。
+縫い目を見せる論考が並ぶ、私設の小さな書架。
+断言の代わりに「判断の宙づり」を並べておくための場所。
 
 ## 開き方
 
@@ -11,13 +11,11 @@ GitHub Pages にデプロイする場合はリポジトリ Settings → Pages �
 ## 中の歩き方
 
 ```
-本館（ロビー）
- ├─ 東翼：文庫 ──── 認識のクセを巡る書架（論考）
- │   ├─ 棚01 ラベルで人を括る
- │   ├─ 棚02 「正しさ」のすれ違い
- │   ├─ 棚03 わかりやすさの罠
- │   └─ 棚04 趣味の評価軸
- └─ 西翼：ツール棚 ── 制作と観察を補う実用書
+本館（index.html）
+ ├─ 棚01 ラベルで人を括る
+ ├─ 棚02 「正しさ」のすれ違い
+ ├─ 棚03 わかりやすさの罠
+ └─ 棚04 趣味の評価軸
 ```
 
 棚は **題材ジャンルではなく「認識のクセ」で分けている**。
@@ -48,32 +46,23 @@ GitHub Pages にデプロイする場合はリポジトリ Settings → Pages �
 
 予定の本はプレースホルダとして並べてあり、書きたくなったときに本文を流し込む。
 
-## ツール棚
-
-論考とは別に、Anko の制作・観察を補う Web ツールを索引する。
-
-- [Arknights: Endfield 基質フィルタ](https://github.com/ANK009-a/arknights_endfield_Substrate_list)
-
 ## ファイル構成
 
 ```
 Library/
-├── index.html               # ロビー
+├── index.html               # 本館（4 棚のトップページ）
 ├── README.md
 ├── assets/
-│   └── lobby.css            # ロビー＆棚ページ共通スタイル（論考本体は触らない）
-├── essays/
-│   ├── index.html           # 文庫トップ（4 棚一覧）
-│   ├── shelves/
-│   │   ├── 01_labeling.html
-│   │   ├── 02_rightness.html
-│   │   ├── 03_clarity_trap.html
-│   │   └── 04_taste_axes.html
-│   └── books/
-│       ├── shijichu_psychology.html
-│       └── shinpan_no_inai_shiai.html
-└── tools/
-    └── index.html
+│   └── lobby.css            # トップ＆棚ページ共通スタイル（論考本体は触らない）
+└── essays/
+    ├── shelves/
+    │   ├── 01_labeling.html
+    │   ├── 02_rightness.html
+    │   ├── 03_clarity_trap.html
+    │   └── 04_taste_axes.html
+    └── books/
+        ├── shijichu_psychology.html
+        └── shinpan_no_inai_shiai.html
 ```
 
 論考の本体（`books/*.html`）は、それぞれが自前の CSS を内部に持つ。
