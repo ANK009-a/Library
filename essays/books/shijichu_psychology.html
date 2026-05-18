@@ -645,7 +645,20 @@ html, body {
   border: none;
   background: transparent;
   font-feature-settings: "vert", "palt";
+  /* Native columnar pagination: each column is one viewport wide,
+     so page breaks fall at column boundaries (= page edges). */
+  column-width: 100vw;
+  column-gap: 0;
+  column-fill: auto;
 }
+
+/* Keep structural elements together so a heading is never stranded
+   at the end of a page from its body */
+.section-header { break-inside: avoid; break-after: avoid; }
+.section h3     { break-inside: avoid; break-after: avoid; }
+.toc > ol > li  { break-inside: avoid; }
+.section ul, .section ol { break-inside: avoid-column; }
+.section .table-wrap { break-inside: avoid; }
 
 /* ---- masthead in tategaki ---- */
 .masthead {
@@ -1192,30 +1205,7 @@ body {
   const indicator = document.getElementById('pageIndicator');
   if (!book) return;
 
-  const blocks = () =>
-    document.querySelectorAll('.container > .masthead, .container > .toc, .container > article > .section');
-
   const pageWidth = () => book.clientWidth;
-
-  // --- snap each top-level block to a whole-number multiple of viewport width
-  // so total page count is exact and every "page" lines up with a column.
-  function alignBlocksToPages() {
-    const vw = pageWidth();
-    if (!vw) return;
-    // reset prior widths so we can measure the natural tategaki width
-    blocks().forEach(el => {
-      el.style.width = '';
-      el.style.minWidth = '';
-    });
-    // measure → round up → apply
-    blocks().forEach(el => {
-      const natural = el.getBoundingClientRect().width;
-      const pages = Math.max(1, Math.ceil((natural - 0.5) / vw));
-      const w = pages * vw;
-      el.style.width = w + 'px';
-      el.style.minWidth = w + 'px';
-    });
-  }
 
   // --- page indicator ---
   function updateIndicator() {
@@ -1258,7 +1248,6 @@ body {
 
   // --- initial alignment (after fonts settle) + resize handling ---
   function settle() {
-    alignBlocksToPages();
     book.scrollLeft = 0; // land on the cover
     updateIndicator();
   }
