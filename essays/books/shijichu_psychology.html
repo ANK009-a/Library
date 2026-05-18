@@ -1192,7 +1192,30 @@ body {
   const indicator = document.getElementById('pageIndicator');
   if (!book) return;
 
+  const blocks = () =>
+    document.querySelectorAll('.container > .masthead, .container > .toc, .container > article > .section');
+
   const pageWidth = () => book.clientWidth;
+
+  // --- snap each top-level block to a whole-number multiple of viewport width
+  // so total page count is exact and every "page" lines up with a column.
+  function alignBlocksToPages() {
+    const vw = pageWidth();
+    if (!vw) return;
+    // reset prior widths so we can measure the natural tategaki width
+    blocks().forEach(el => {
+      el.style.width = '';
+      el.style.minWidth = '';
+    });
+    // measure → round up → apply
+    blocks().forEach(el => {
+      const natural = el.getBoundingClientRect().width;
+      const pages = Math.max(1, Math.ceil((natural - 0.5) / vw));
+      const w = pages * vw;
+      el.style.width = w + 'px';
+      el.style.minWidth = w + 'px';
+    });
+  }
 
   // --- page indicator ---
   function updateIndicator() {
@@ -1232,11 +1255,23 @@ body {
 
   // --- indicator updates ---
   book.addEventListener('scroll', updateIndicator, { passive: true });
-  window.addEventListener('resize', updateIndicator);
-  // Cover-first land + initial render
-  requestAnimationFrame(() => {
-    book.scrollLeft = 0;
+
+  // --- initial alignment (after fonts settle) + resize handling ---
+  function settle() {
+    alignBlocksToPages();
+    book.scrollLeft = 0; // land on the cover
     updateIndicator();
+  }
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => requestAnimationFrame(settle));
+  } else {
+    requestAnimationFrame(settle);
+  }
+
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(settle, 150);
   });
 })();
 </script>
