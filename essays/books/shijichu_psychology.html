@@ -973,6 +973,63 @@ body {
 }
 
 /* ============================================================
+   Page-flip animation overlay
+   ============================================================ */
+.flipper-stage {
+  position: fixed;
+  pointer-events: none;
+  perspective: 1800px;
+  z-index: 50;
+  visibility: hidden;
+}
+.flipper-stage.active { visibility: visible; }
+
+.flipper {
+  position: absolute;
+  top: 0; bottom: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(.45, 0, .25, 1);
+  transform: rotateY(0);
+  width: var(--flipper-w, 50%);
+}
+/* Forward step: the leaf on the left rotates rightward around the binding */
+.flipper.fwd {
+  left: 0;
+  transform-origin: right center;
+}
+.flipper.fwd.flipping { transform: rotateY(-180deg); }
+/* Backward step: the leaf on the right rotates leftward */
+.flipper.back {
+  right: 0;
+  transform-origin: left center;
+}
+.flipper.back.flipping { transform: rotateY(180deg); }
+
+.flipper .face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  background: var(--paper, #faf6ec);
+}
+.flipper .face-front {
+  box-shadow:
+    inset 0 0 80px rgba(28,24,20,.04),
+    -2px 0 16px rgba(28,24,20,.16);
+}
+.flipper .face-back {
+  transform: rotateY(180deg);
+  background:
+    linear-gradient(to right, rgba(28,24,20,.10), var(--paper) 35%),
+    var(--paper);
+  box-shadow: inset 0 0 60px rgba(28,24,20,.05);
+}
+.flipper.back .face-back {
+  background:
+    linear-gradient(to left, rgba(28,24,20,.10), var(--paper) 35%),
+    var(--paper);
+}
+
+/* ============================================================
    Wider-than-mobile screens: present the book as a centered
    portrait page (single page) on small desktop, two-page spread
    on large desktop.
@@ -1050,6 +1107,7 @@ body {
 
 <div class="progress-bar" id="progress"></div>
 <div class="page-indicator" id="pageIndicator"></div>
+<div class="flipper-stage" id="flipperStage" aria-hidden="true"></div>
 
 <div class="container">
 
@@ -1488,12 +1546,51 @@ body {
   // dir = +1 → next page (advance further into the book, scrollLeft decreases with row-reverse)
   // dir = -1 → previous page
   let scrollLock = false;
+
+  // 3D page-flip animation. The leaf at the binding side rotates 180°,
+  // and the actual scroll position is updated mid-rotation so the
+  // newly revealed pages appear underneath the rotating leaf.
+  function flipPage(dir) {
+    const rect = book.getBoundingClientRect();
+    const stage = document.getElementById('flipperStage');
+    if (!stage) return false;
+    stage.style.top = rect.top + 'px';
+    stage.style.left = rect.left + 'px';
+    stage.style.width = rect.width + 'px';
+    stage.style.height = rect.height + 'px';
+    stage.style.setProperty('--flipper-w',
+      viewPagesCount() === 2 ? '50%' : '100%');
+
+    const flipper = document.createElement('div');
+    flipper.className = 'flipper ' + (dir > 0 ? 'fwd' : 'back');
+    flipper.innerHTML =
+      '<div class="face face-front"></div><div class="face face-back"></div>';
+    stage.appendChild(flipper);
+    stage.classList.add('active');
+
+    // Force a layout pass before adding the .flipping class so the
+    // transition picks up the initial rotateY(0) state.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      flipper.classList.add('flipping');
+    }));
+
+    // Update the underlying scroll position mid-flip, when the leaf
+    // is edge-on and the new spread should be revealed underneath.
+    setTimeout(() => { book.scrollLeft -= dir * book.clientWidth; }, 350);
+
+    // Clean up once the rotation has settled on the other side.
+    setTimeout(() => {
+      flipper.remove();
+      if (stage.children.length === 0) stage.classList.remove('active');
+    }, 720);
+    return true;
+  }
+
   function step(dir) {
     if (scrollLock) return;
     scrollLock = true;
-    // Always step by one full view (1 page on mobile, 2 pages in spread mode)
-    book.scrollBy({ left: -dir * book.clientWidth, behavior: 'smooth' });
-    setTimeout(() => { scrollLock = false; }, 380);
+    flipPage(dir);
+    setTimeout(() => { scrollLock = false; }, 740);
   }
 
   // --- mouse wheel: down/right = next page ---
