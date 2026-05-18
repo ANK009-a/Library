@@ -595,6 +595,188 @@ table tbody td strong {
 .masthead h1 { animation-delay: 0.2s; }
 .masthead .subtitle { animation-delay: 0.3s; }
 .masthead .meta { animation-delay: 0.4s; }
+/* ============================================================
+   Book reader mode — tategaki + horizontal pagination
+   ============================================================ */
+
+html, body {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  margin: 0;
+}
+
+/* Hide the existing top progress bar — we'll add a vertical one later */
+.progress-bar { display: none; }
+
+/* The container becomes the horizontal-scrolling "book stage" */
+.container {
+  display: flex;
+  flex-direction: row-reverse;        /* masthead at right, reading goes leftward */
+  max-width: none;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  scroll-behavior: smooth;
+  /* paper edge shadows along top/bottom for "book opened" feel */
+  box-shadow:
+    inset 0 12px 24px -20px rgba(28,24,20,.4),
+    inset 0 -12px 24px -20px rgba(28,24,20,.4);
+}
+
+/* The article wrapper is transparent so sections become direct flex children */
+.container > article { display: contents; }
+
+.container > .masthead,
+.container > .toc,
+.container > article > .section {
+  flex: 0 0 auto;
+  min-width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 4.5rem 2.4rem 3.5rem;
+  writing-mode: vertical-rl;
+  scroll-snap-align: start;
+  box-sizing: border-box;
+  border: none;
+  background: transparent;
+  font-feature-settings: "vert", "palt";
+}
+
+/* ---- masthead in tategaki ---- */
+.masthead {
+  border-bottom: none;
+  padding-top: 5rem;
+}
+.masthead .breadcrumb { display: none; }
+.masthead .kicker {
+  display: inline-block;
+  margin-bottom: 1.6rem;
+}
+.masthead .kicker::before,
+.masthead .kicker::after { display: none; }
+.masthead h1 {
+  font-size: clamp(28px, 7vw, 44px);
+  letter-spacing: .04em;
+  margin-bottom: 1.2rem;
+}
+.masthead .subtitle {
+  font-size: clamp(15px, 4vw, 18px);
+  margin-top: 1rem;
+}
+.masthead .subtitle br { display: none; }
+.masthead .meta {
+  display: block;
+  margin-top: 3rem;
+  font-size: 12px;
+}
+.masthead .meta span {
+  display: inline-block;
+  margin: 0 1.4rem 0 0;
+  vertical-align: top;
+}
+
+/* ---- TOC in tategaki ---- */
+.toc {
+  border-radius: 0;
+  border: 1px solid var(--rule);
+  padding: 2.4rem 2rem;
+  margin: 0;
+}
+.toc::before {
+  top: 1.8rem;
+  left: auto;
+  right: -14px;
+  background: var(--bg);
+  padding: 12px 0;
+  writing-mode: vertical-rl;
+}
+.toc ol { display: block; }
+.toc > ol > li {
+  padding: 0 2.6rem 0 0;
+  border-bottom: none;
+  border-right: 1px dashed var(--rule-soft);
+  margin-bottom: 1rem;
+  min-height: 4rem;
+}
+.toc > ol > li:last-child { border-right: none; }
+.toc > ol > li::before {
+  left: auto;
+  right: 6px;
+  top: 0;
+}
+.toc .toc-sub { margin-top: 0.6rem; }
+
+/* ---- Section header in tategaki ---- */
+.section { margin: 0; }
+.section-header {
+  border-top: none;
+  border-right: 2px solid var(--ink);
+  padding-top: 0;
+  padding-right: 2.4rem;
+  margin-bottom: 2.4rem;
+}
+.section-header .num {
+  top: 0;
+  left: auto;
+  right: -42px;
+  background: var(--bg);
+  padding: 12px 0;
+  font-size: 30px;
+}
+.section-header h2 {
+  font-size: clamp(20px, 5.5vw, 26px);
+  padding-top: 0;
+  padding-right: 1.2rem;
+}
+
+/* ---- Subsection h3 / paragraphs ---- */
+.section h3 {
+  border-left: none;
+  border-right: 3px solid var(--accent);
+  padding-left: 0;
+  padding-right: 1rem;
+  margin: 0 3rem 1.4rem 0;
+  font-size: 17px;
+}
+.section p {
+  text-align: start;
+  margin-bottom: 1.4em;
+  line-height: 2.1;
+}
+
+/* Drop cap doesn't translate to tategaki well — disable */
+.drop-cap::first-letter {
+  float: none;
+  font-size: inherit;
+  margin: 0;
+  color: inherit;
+}
+
+/* Lists — flip side */
+.section ul li, .section ol li {
+  padding-left: 0;
+  padding-right: 28px;
+}
+.section ul li::before { left: auto; right: 8px; top: 0.8em; }
+.section ol li::before { left: auto; right: 0; }
+
+/* Body font tuning for tategaki readability */
+body {
+  font-size: 16px;
+  letter-spacing: .05em;
+  font-feature-settings: "vert", "palt";
+}
+
+@media (max-width: 640px) {
+  .container > * { padding: 3.5rem 1.5rem 2.5rem; }
+  .masthead .meta { margin-top: 2.2rem; }
+}
+
 </style>
 </head>
 <body>
@@ -983,13 +1165,20 @@ table tbody td strong {
 </div>
 
 <script>
-// Reading progress bar
-window.addEventListener('scroll', () => {
-  const scrolled = window.scrollY;
-  const total = document.documentElement.scrollHeight - window.innerHeight;
-  const percent = (scrolled / total) * 100;
-  document.getElementById('progress').style.width = percent + '%';
-});
+// Book reader: initialize scroll so the cover/title page (rightmost in row-reverse) is visible first.
+(() => {
+  const book = document.querySelector('.container');
+  if (!book) return;
+  // Land on the cover (masthead is the first child but visually at the right due to row-reverse)
+  requestAnimationFrame(() => {
+    book.scrollLeft = book.scrollWidth - book.clientWidth;
+  });
+  // Keyboard navigation: ← / → step one page (one viewport width)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft')  book.scrollBy({ left: -book.clientWidth, behavior: 'smooth' });
+    if (e.key === 'ArrowRight') book.scrollBy({ left:  book.clientWidth, behavior: 'smooth' });
+  });
+})();
 </script>
 
 </body>
