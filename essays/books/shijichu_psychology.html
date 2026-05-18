@@ -624,7 +624,9 @@ html, body {
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x proximity;
-  scroll-behavior: smooth;
+  /* No scroll-behavior: smooth — the page-flip animation drives all
+     transitions, native smooth-scroll would slide in afterwards and
+     fight the flip. */
   /* paper edge shadows along top/bottom for "book opened" feel */
   box-shadow:
     inset 0 12px 24px -20px rgba(28,24,20,.4),
@@ -1666,8 +1668,11 @@ body {
       flipper.classList.add('flipping');
     }));
 
-    // Update the underlying scroll position mid-flip.
-    setTimeout(() => { book.scrollLeft = nextScroll; }, 350);
+    // Update the underlying scroll position mid-flip — instant, not
+    // smooth, so it doesn't slide in after the flip completes.
+    setTimeout(() => {
+      book.scrollTo({ left: nextScroll, behavior: 'instant' });
+    }, 350);
 
     // Clean up once the rotation has settled on the other side.
     setTimeout(() => {
@@ -1696,8 +1701,8 @@ body {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft'  || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); step(1); }
     if (e.key === 'ArrowRight' || e.key === 'PageUp')                    { e.preventDefault(); step(-1); }
-    if (e.key === 'Home') book.scrollTo({ left: 0, behavior: 'smooth' });
-    if (e.key === 'End')  book.scrollTo({ left: -book.scrollWidth, behavior: 'smooth' });
+    if (e.key === 'Home') book.scrollTo({ left: 0, behavior: 'instant' });
+    if (e.key === 'End')  book.scrollTo({ left: -book.scrollWidth, behavior: 'instant' });
   });
 
   // --- indicator updates ---
