@@ -348,7 +348,7 @@ section.block + section.block { border-top: 1px solid var(--gold-faint); }
   align-items: flex-end;
   justify-content: flex-start;
   gap: 7px;
-  height: 76px;
+  height: 92px;
   padding: 0 .2rem;
 }
 .spine {
@@ -759,7 +759,7 @@ footer.site {
   .book .spine { font-size: 1.4rem; padding-top: .3rem; }
 
   /* スマホでは書架の余裕を活かして背表紙を少し太く、間隔も広く */
-  .spines { gap: 12px; height: 94px; padding: 0 .5rem; }
+  .spines { gap: 12px; height: 112px; padding: 0 .5rem; }
   .spine { flex: 0 0 32px; }
   .spine-title { font-size: .72rem; top: .45rem; line-height: 1.1; }
 
