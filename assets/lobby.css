@@ -242,23 +242,22 @@ section.block + section.block { border-top: 1px solid var(--gold-faint); }
 
 /* ====== Shelf cards (lobby) ―― 書架として見せる ====== */
 .shelves {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.4rem;
-  margin: 1rem 0 3rem;
-}
-.shelf-card {
   display: flex;
   flex-direction: column;
+  gap: 1.4rem;
+  margin: 1rem auto 3rem;
+  max-width: 42rem;
+}
+.shelf-card {
+  display: block;
   background: linear-gradient(180deg, var(--ink-card), var(--ink-3));
   border: 1px solid var(--gold-faint);
   border-radius: 3px;
-  padding: 1.3rem 1.5rem 1.3rem;
-  text-decoration: none;
+  padding: 0;
   color: inherit;
   position: relative;
   overflow: hidden;
-  transition: border-color .25s, transform .25s, box-shadow .25s;
+  transition: border-color .3s, box-shadow .3s;
 }
 .shelf-card::before {
   /* 上方からの灯り（ホバー時に灯る） */
@@ -269,13 +268,35 @@ section.block + section.block { border-top: 1px solid var(--gold-faint); }
   opacity: 0;
   transition: opacity .4s;
   pointer-events: none;
+  z-index: 0;
 }
-.shelf-card:hover {
-  border-color: var(--gold);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(0,0,0,.5);
-}
+.shelf-card:hover { border-color: var(--gold); }
 .shelf-card:hover::before { opacity: 1; }
+.shelf-card[aria-expanded="true"] {
+  border-color: var(--gold);
+  box-shadow: 0 10px 30px rgba(0,0,0,.5);
+}
+.shelf-card[aria-expanded="true"]::before { opacity: .8; }
+
+/* clickable head: 全領域がタップ対象 */
+.shelf-head {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  padding: 1.3rem 1.5rem 1.3rem;
+  margin: 0;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+.shelf-head:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: -4px;
+}
 
 .shelf-plate {
   display: flex;
@@ -284,6 +305,8 @@ section.block + section.block { border-top: 1px solid var(--gold-faint); }
   padding-bottom: .8rem;
   margin-bottom: 1rem;
   border-bottom: 1px solid var(--gold-faint);
+  position: relative;
+  padding-right: 2rem;
 }
 .shelf-plate .shelf-no {
   font-family: "EB Garamond", serif;
@@ -297,6 +320,22 @@ section.block + section.block { border-top: 1px solid var(--gold-faint); }
   font-weight: 700;
   letter-spacing: .02em;
   line-height: 1.4;
+  flex: 1;
+}
+.shelf-toggle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-family: "EB Garamond", serif;
+  color: var(--gold);
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: transform .4s ease, color .25s;
+  display: inline-block;
+}
+.shelf-card[aria-expanded="true"] .shelf-toggle {
+  transform: rotate(180deg);
+  color: var(--gold-bright);
 }
 
 /* 書架の段：背表紙が立ち、棚板で受ける */
@@ -344,8 +383,14 @@ section.block + section.block { border-top: 1px solid var(--gold-faint); }
   border-bottom: none;
   border-radius: 1px 1px 0 0;
 }
-.shelf-card:hover .spine.vol { transform: translateY(-4px); }
-.shelf-card:hover .spine.planned { border-color: rgba(184,145,80,.35); }
+.shelf-card:hover .spine.vol,
+.shelf-card[aria-expanded="true"] .spine.vol {
+  transform: translateY(-4px);
+}
+.shelf-card:hover .spine.planned,
+.shelf-card[aria-expanded="true"] .spine.planned {
+  border-color: rgba(184,145,80,.35);
+}
 
 .shelf-board {
   height: 5px;
@@ -362,7 +407,6 @@ section.block + section.block { border-top: 1px solid var(--gold-faint); }
   color: var(--parchment-dim);
   line-height: 1.8;
   margin: .2rem 0 1rem;
-  flex: 1;
 }
 .shelf-count {
   font-family: "EB Garamond", serif;
@@ -372,6 +416,112 @@ section.block + section.block { border-top: 1px solid var(--gold-faint); }
 }
 .shelf-count b { color: var(--ember); font-weight: 500; }
 .shelf-count .dot { margin: 0 .35em; opacity: .6; }
+
+/* ====== Shelf body: expand / collapse ====== */
+.shelf-body-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .55s cubic-bezier(.2,.7,.2,1);
+  position: relative;
+  z-index: 1;
+}
+.shelf-card[aria-expanded="true"] .shelf-body-wrap {
+  grid-template-rows: 1fr;
+}
+.shelf-body {
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity .4s ease .1s;
+}
+.shelf-card[aria-expanded="true"] .shelf-body { opacity: 1; }
+.shelf-body-inner {
+  padding: 0 1.5rem 1.6rem;
+}
+.shelf-body-inner::before {
+  /* 書架の段が開いた時の罫 */
+  content: "";
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-faint), transparent);
+  margin: 0 -.2rem .9rem;
+}
+.shelf-body .shelf-intro {
+  margin: 0 0 1.2rem;
+}
+.shelf-body .shelf-intro p {
+  font-size: .98rem;
+  line-height: 1.95;
+  color: var(--parchment);
+  margin-bottom: 1rem;
+}
+.shelf-body .shelf-intro p:last-child { margin-bottom: 0; }
+
+/* inline book list (within expanded shelf) */
+.books-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.2rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+}
+.books-list li { margin: 0; padding: 0; }
+.book-row {
+  display: grid;
+  grid-template-columns: 2.4rem 1fr;
+  gap: .9rem;
+  padding: .9rem 1rem;
+  text-decoration: none;
+  color: inherit;
+  background: rgba(0,0,0,.22);
+  border: 1px solid rgba(184,145,80,.18);
+  border-radius: 3px;
+  transition: border-color .25s, background .25s, transform .25s;
+}
+a.book-row:hover {
+  border-color: var(--gold);
+  background: rgba(184,145,80,.06);
+  transform: translateX(3px);
+}
+.book-row .book-mark {
+  font-family: "EB Garamond", serif;
+  font-size: 1.4rem;
+  color: var(--gold);
+  line-height: 1.3;
+  text-align: center;
+  border-right: 1px solid var(--gold-faint);
+  padding: .15rem .5rem 0 0;
+}
+.book-row .book-info h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 .3rem;
+  line-height: 1.45;
+}
+.book-row .book-info .book-sub {
+  font-size: .88rem;
+  color: var(--parchment-dim);
+  line-height: 1.7;
+  margin: 0 0 .4rem;
+}
+.book-row .book-info .book-meta {
+  font-family: "EB Garamond", serif;
+  font-size: .78rem;
+  letter-spacing: .08em;
+  color: var(--parchment-faint);
+}
+.book-row.planned { opacity: .5; cursor: default; }
+.book-row.planned .book-mark { color: var(--parchment-faint); }
+.book-row.planned .book-info h4::after {
+  content: " ― 予定";
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: .72rem;
+  letter-spacing: .1em;
+  color: var(--ash);
+  font-weight: 400;
+  margin-left: .3rem;
+}
 
 /* ====== Book list (shelf page) ====== */
 .shelf-intro {
@@ -564,7 +714,7 @@ footer.site {
 @media (max-width: 640px) {
   header.site { padding: 4.5rem 0 2.2rem; }
   .wings { grid-template-columns: 1fr; }
-  .shelves { grid-template-columns: 1fr; gap: 1.1rem; }
+  .shelves { gap: 1.1rem; }
   .relateds { grid-template-columns: 1fr; }
   .book { grid-template-columns: 3rem 1fr; gap: 1rem; padding: 1.2rem 1.2rem; }
   .book .spine { font-size: 1.4rem; padding-top: .3rem; }
@@ -572,4 +722,10 @@ footer.site {
   /* スマホでは書架の余裕を活かして背表紙を少し太く */
   .spines { gap: 9px; height: 84px; padding: 0 .5rem; }
   .spine { flex: 0 0 28px; }
+
+  .shelf-head { padding: 1.1rem 1.2rem 1.2rem; }
+  .shelf-body-inner { padding: 0 1.2rem 1.4rem; }
+  .book-row { grid-template-columns: 2rem 1fr; padding: .8rem .9rem; gap: .7rem; }
+  .book-row .book-mark { font-size: 1.2rem; }
+  .book-row .book-info h4 { font-size: 1rem; }
 }
