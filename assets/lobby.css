@@ -495,12 +495,12 @@ a.spine.vol:focus-visible {
 }
 .shelf-body .shelf-intro p:last-child { margin-bottom: 0; }
 
-/* inline book list (within expanded shelf) */
+/* inline book list — 表紙モーダルがあるので画面には出さず、データ源として保持 */
 .books-list {
+  display: none;
   list-style: none;
   padding: 0;
   margin: 1.2rem 0 0;
-  display: flex;
   flex-direction: column;
   gap: .7rem;
 }
@@ -840,29 +840,24 @@ footer.site {
 
 .cover-title {
   font-family: "Shippori Mincho", "Noto Serif JP", serif;
-  font-size: 1.45rem;
+  font-size: 1.95rem;
   font-weight: 700;
   text-align: center;
   color: rgba(234, 215, 165, 0.96);
-  line-height: 1.45;
-  letter-spacing: .03em;
-  text-shadow: 0 2px 6px rgba(0,0,0,.5);
+  line-height: 1.5;
+  letter-spacing: .02em;
+  text-shadow: 0 2px 8px rgba(0,0,0,.55);
   margin: 0;
+  padding: 0 .2rem;
 }
 .cover-front.planned .cover-title {
-  color: rgba(212, 184, 120, 0.7);
+  color: rgba(212, 184, 120, 0.72);
 }
 
-.cover-emblem {
+/* タイトルを上下中央に押し上げるための空白 */
+.cover-flex {
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "EB Garamond", serif;
-  font-size: 1.2rem;
-  color: rgba(212, 184, 120, .35);
-  letter-spacing: .4em;
-  margin: 1rem 0;
+  min-height: .6rem;
 }
 
 .cover-foot {
@@ -955,7 +950,7 @@ footer.site {
 
   .cover-overlay { padding: 3rem 1rem 1.6rem; }
   .cover-card { max-width: 100%; gap: 1rem; }
-  .cover-title { font-size: 1.35rem; }
+  .cover-title { font-size: 1.75rem; line-height: 1.48; }
   .cover-front { padding: 1.4rem 1.25rem 1.2rem; }
   .cover-desc { font-size: .82rem; line-height: 1.72; }
   .cover-action { padding: .75rem 2rem; font-size: .95rem; }
