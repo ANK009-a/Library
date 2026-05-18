@@ -1010,23 +1010,53 @@ body {
   inset: 0;
   backface-visibility: hidden;
   background: var(--paper, #faf6ec);
+  overflow: hidden;
 }
 .flipper .face-front {
   box-shadow:
-    inset 0 0 80px rgba(28,24,20,.04),
     -2px 0 16px rgba(28,24,20,.16);
 }
 .flipper .face-back {
   transform: rotateY(180deg);
-  background:
-    linear-gradient(to right, rgba(28,24,20,.10), var(--paper) 35%),
-    var(--paper);
-  box-shadow: inset 0 0 60px rgba(28,24,20,.05);
+  box-shadow:
+    -2px 0 16px rgba(28,24,20,.16);
 }
-.flipper.back .face-back {
-  background:
-    linear-gradient(to left, rgba(28,24,20,.10), var(--paper) 35%),
-    var(--paper);
+/* The DOM clone we drop into each face: full book size, clipped to face */
+.flipper .face .book-clone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  margin: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+/* Soft inner shading near the binding so the leaf reads as paper */
+.flipper .face::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 24%;
+  pointer-events: none;
+  z-index: 5;
+}
+.flipper.fwd .face-front::after {
+  right: 0;
+  background: linear-gradient(to right, transparent, rgba(28,24,20,.10));
+}
+.flipper.fwd .face-back::after {
+  /* face-back is pre-rotated 180deg, so "right" here is visually the binding */
+  right: 0;
+  background: linear-gradient(to right, transparent, rgba(28,24,20,.10));
+}
+.flipper.back .face-front::after {
+  left: 0;
+  background: linear-gradient(to left, transparent, rgba(28,24,20,.10));
+}
+.flipper.back .face-back::after {
+  left: 0;
+  background: linear-gradient(to left, transparent, rgba(28,24,20,.10));
 }
 
 /* ============================================================
@@ -1547,6 +1577,33 @@ body {
   // dir = -1 → previous page
   let scrollLock = false;
 
+  // Build a snapshot of the current book content positioned to match
+  // a given scrollLeft. The clone is sized to the book's viewport and
+  // its scrollLeft is set so the same content is visible inside.
+  function makeBookClone(targetScrollLeft) {
+    const clone = book.cloneNode(true);
+    clone.removeAttribute('id');
+    clone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+    clone.classList.add('book-clone');
+    clone.style.position = 'absolute';
+    clone.style.top = '0';
+    clone.style.left = '0';
+    clone.style.width = book.clientWidth + 'px';
+    clone.style.height = book.clientHeight + 'px';
+    clone.style.boxShadow = 'none';
+    clone.style.borderRadius = '0';
+    clone.style.overflow = 'hidden';
+    clone.style.pointerEvents = 'none';
+    // Defer scrollLeft assignment until the clone is in the DOM
+    clone.dataset.targetScroll = String(targetScrollLeft);
+    return clone;
+  }
+
+  function applyCloneScroll(clone) {
+    const target = Number(clone.dataset.targetScroll || 0);
+    clone.scrollLeft = target;
+  }
+
   // 3D page-flip animation. The leaf at the binding side rotates 180°,
   // and the actual scroll position is updated mid-rotation so the
   // newly revealed pages appear underneath the rotating leaf.
@@ -1554,19 +1611,54 @@ body {
     const rect = book.getBoundingClientRect();
     const stage = document.getElementById('flipperStage');
     if (!stage) return false;
+    const clientW = book.clientWidth;
+    const pages = viewPagesCount();
     stage.style.top = rect.top + 'px';
     stage.style.left = rect.left + 'px';
     stage.style.width = rect.width + 'px';
     stage.style.height = rect.height + 'px';
-    stage.style.setProperty('--flipper-w',
-      viewPagesCount() === 2 ? '50%' : '100%');
+    stage.style.setProperty('--flipper-w', pages === 2 ? '50%' : '100%');
+
+    const currentScroll = book.scrollLeft;
+    const nextScroll = currentScroll - dir * clientW;
 
     const flipper = document.createElement('div');
     flipper.className = 'flipper ' + (dir > 0 ? 'fwd' : 'back');
-    flipper.innerHTML =
-      '<div class="face face-front"></div><div class="face face-back"></div>';
+
+    // FRONT face = the page the reader is leaving.
+    // For a forward turn, this is the LEFT page of the current spread,
+    // which sits in the left half of the container at currentScroll.
+    // For a back turn, it's the RIGHT page (right half of currentScroll).
+    const faceFront = document.createElement('div');
+    faceFront.className = 'face face-front';
+    const cloneFront = makeBookClone(currentScroll);
+    // Shift the clone so the relevant half lines up inside the face's box.
+    if (pages === 2 && dir < 0) {
+      cloneFront.style.transform = `translateX(-${clientW / 2}px)`;
+    }
+    faceFront.appendChild(cloneFront);
+    flipper.appendChild(faceFront);
+
+    // BACK face = the page the reader is turning to.
+    // For forward, that's the RIGHT page of the next spread; for back,
+    // the LEFT page of the previous spread.
+    const faceBack = document.createElement('div');
+    faceBack.className = 'face face-back';
+    const cloneBack = makeBookClone(nextScroll);
+    if (pages === 2 && dir > 0) {
+      cloneBack.style.transform = `translateX(-${clientW / 2}px)`;
+    }
+    faceBack.appendChild(cloneBack);
+    flipper.appendChild(faceBack);
+
     stage.appendChild(flipper);
     stage.classList.add('active');
+
+    // Force layout then apply scrollLeft on the clones.
+    void cloneFront.offsetWidth;
+    void cloneBack.offsetWidth;
+    applyCloneScroll(cloneFront);
+    applyCloneScroll(cloneBack);
 
     // Force a layout pass before adding the .flipping class so the
     // transition picks up the initial rotateY(0) state.
@@ -1574,9 +1666,8 @@ body {
       flipper.classList.add('flipping');
     }));
 
-    // Update the underlying scroll position mid-flip, when the leaf
-    // is edge-on and the new spread should be revealed underneath.
-    setTimeout(() => { book.scrollLeft -= dir * book.clientWidth; }, 350);
+    // Update the underlying scroll position mid-flip.
+    setTimeout(() => { book.scrollLeft = nextScroll; }, 350);
 
     // Clean up once the rotation has settled on the other side.
     setTimeout(() => {
