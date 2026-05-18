@@ -609,10 +609,13 @@ html, body {
 /* Hide the existing top progress bar — we'll add a vertical one later */
 .progress-bar { display: none; }
 
-/* The container becomes the horizontal-scrolling "book stage" */
+/* The container is a horizontal flex strip; each top-level block has
+   its own multi-column tategaki layout. Sections are separate flex
+   items so a section never bleeds into the trailing edge of the
+   previous one. */
 .container {
   display: flex;
-  flex-direction: row-reverse;        /* masthead at right, reading goes leftward */
+  flex-direction: row-reverse;
   max-width: none;
   width: 100vw;
   height: 100vh;
@@ -628,7 +631,6 @@ html, body {
     inset 0 -12px 24px -20px rgba(28,24,20,.4);
 }
 
-/* The article wrapper is transparent so sections become direct flex children */
 .container > article { display: contents; }
 
 .container > .masthead,
@@ -645,20 +647,42 @@ html, body {
   border: none;
   background: transparent;
   font-feature-settings: "vert", "palt";
-  /* Native columnar pagination: each column is one viewport wide,
-     so page breaks fall at column boundaries (= page edges). */
   column-width: 100vw;
   column-gap: 0;
   column-fill: auto;
 }
 
-/* Keep structural elements together so a heading is never stranded
-   at the end of a page from its body */
-.section-header { break-inside: avoid; break-after: avoid; }
-.section h3     { break-inside: avoid; break-after: avoid; }
-.toc > ol > li  { break-inside: avoid; }
-.section ul, .section ol { break-inside: avoid-column; }
-.section .table-wrap { break-inside: avoid; }
+/* --- Page-break protection ------------------------------------------
+   Keep structural elements intact so a heading never lands at the
+   very bottom of a page with its body on the next, and lists / tables
+   / blockquotes never split mid-element. */
+.section-header,
+.section h3,
+.toc > ol > li,
+.section .table-wrap,
+.section ul,
+.section ol,
+.section ul li,
+.section ol li,
+.section blockquote {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+}
+.section-header,
+.section h3,
+.masthead .kicker {
+  break-after: avoid;
+  -webkit-column-break-after: avoid;
+  page-break-after: avoid;
+}
+/* Keep at least 2 vertical lines on either side of a paragraph break */
+.section p { orphans: 2; widows: 2; }
+/* Strong / emphasized phrases shouldn't be torn across pages */
+.section p strong,
+.section p em {
+  break-inside: avoid;
+}
 
 /* ---- masthead in tategaki ---- */
 .masthead {
@@ -1206,6 +1230,24 @@ body {
   if (!book) return;
 
   const pageWidth = () => book.clientWidth;
+  const blocks = () =>
+    document.querySelectorAll('.container > .masthead, .container > .toc, .container > article > .section');
+
+  // --- snap each top-level block to a whole-number multiple of viewport width
+  // so total page count is exact and section transitions land on page edges,
+  // even though each section internally uses multi-column for break protection.
+  function alignBlocksToPages() {
+    const vw = pageWidth();
+    if (!vw) return;
+    blocks().forEach(el => { el.style.width = ''; el.style.minWidth = ''; });
+    blocks().forEach(el => {
+      const natural = el.getBoundingClientRect().width;
+      const pages = Math.max(1, Math.ceil((natural - 0.5) / vw));
+      const w = pages * vw;
+      el.style.width = w + 'px';
+      el.style.minWidth = w + 'px';
+    });
+  }
 
   // --- page indicator ---
   function updateIndicator() {
@@ -1248,6 +1290,7 @@ body {
 
   // --- initial alignment (after fonts settle) + resize handling ---
   function settle() {
+    alignBlocksToPages();
     book.scrollLeft = 0; // land on the cover
     updateIndicator();
   }
