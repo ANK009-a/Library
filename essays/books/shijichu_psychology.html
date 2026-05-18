@@ -772,8 +772,28 @@ body {
   font-feature-settings: "vert", "palt";
 }
 
+/* Page indicator at the bottom */
+.page-indicator {
+  position: fixed;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: var(--ink-muted);
+  pointer-events: none;
+  z-index: 50;
+  background: rgba(244, 239, 226, 0.7);
+  padding: 4px 16px;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
 @media (max-width: 640px) {
-  .container > * { padding: 3.5rem 1.5rem 2.5rem; }
+  .container > * { padding: 3.5rem 1.5rem 3rem; }
   .masthead .meta { margin-top: 2.2rem; }
 }
 
@@ -782,6 +802,7 @@ body {
 <body>
 
 <div class="progress-bar" id="progress"></div>
+<div class="page-indicator" id="pageIndicator"></div>
 
 <div class="container">
 
@@ -1165,18 +1186,57 @@ body {
 </div>
 
 <script>
-// Book reader: initialize scroll so the cover/title page (rightmost in row-reverse) is visible first.
+// Book reader: mouse wheel / keyboard / swipe → step one page at a time
 (() => {
   const book = document.querySelector('.container');
+  const indicator = document.getElementById('pageIndicator');
   if (!book) return;
-  // Land on the cover (masthead is the first child but visually at the right due to row-reverse)
-  requestAnimationFrame(() => {
-    book.scrollLeft = book.scrollWidth - book.clientWidth;
-  });
-  // Keyboard navigation: ← / → step one page (one viewport width)
+
+  const pageWidth = () => book.clientWidth;
+
+  // --- page indicator ---
+  function updateIndicator() {
+    const w = pageWidth();
+    const total = Math.max(1, Math.round(book.scrollWidth / w));
+    // With flex-direction: row-reverse, scrollLeft is 0 at the cover and goes negative as we advance.
+    const current = Math.round(Math.abs(book.scrollLeft) / w) + 1;
+    indicator.textContent = `${Math.min(current, total)} / ${total}`;
+  }
+
+  // --- step navigation ---
+  // dir = +1 → next page (advance further into the book, scrollLeft decreases with row-reverse)
+  // dir = -1 → previous page
+  let scrollLock = false;
+  function step(dir) {
+    if (scrollLock) return;
+    scrollLock = true;
+    book.scrollBy({ left: -dir * pageWidth(), behavior: 'smooth' });
+    setTimeout(() => { scrollLock = false; }, 380);
+  }
+
+  // --- mouse wheel: down/right = next page ---
+  book.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaY) < 4 && Math.abs(e.deltaX) < 4) return;
+    e.preventDefault();
+    const delta = e.deltaY + e.deltaX;
+    step(delta > 0 ? 1 : -1);
+  }, { passive: false });
+
+  // --- keyboard ---
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft')  book.scrollBy({ left: -book.clientWidth, behavior: 'smooth' });
-    if (e.key === 'ArrowRight') book.scrollBy({ left:  book.clientWidth, behavior: 'smooth' });
+    if (e.key === 'ArrowLeft'  || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); step(1); }
+    if (e.key === 'ArrowRight' || e.key === 'PageUp')                    { e.preventDefault(); step(-1); }
+    if (e.key === 'Home') book.scrollTo({ left: 0, behavior: 'smooth' });
+    if (e.key === 'End')  book.scrollTo({ left: -book.scrollWidth, behavior: 'smooth' });
+  });
+
+  // --- indicator updates ---
+  book.addEventListener('scroll', updateIndicator, { passive: true });
+  window.addEventListener('resize', updateIndicator);
+  // Cover-first land + initial render
+  requestAnimationFrame(() => {
+    book.scrollLeft = 0;
+    updateIndicator();
   });
 })();
 </script>
