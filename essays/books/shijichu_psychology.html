@@ -637,7 +637,7 @@ html, body {
 .container > .toc,
 .container > article > .section {
   flex: 0 0 auto;
-  min-width: 100%;
+  min-width: var(--page-w, 100%);
   height: 100%;
   margin: 0;
   padding: 4.5rem 2.4rem 3.5rem;
@@ -974,7 +974,8 @@ body {
 
 /* ============================================================
    Wider-than-mobile screens: present the book as a centered
-   portrait page instead of stretching to the full window.
+   portrait page (single page) on small desktop, two-page spread
+   on large desktop.
    ============================================================ */
 @media (min-width: 720px) {
   html, body {
@@ -1002,6 +1003,7 @@ body {
       0 22px 60px rgba(28,24,20,.45),
       0 4px 14px rgba(28,24,20,.25);
     background: var(--bg);
+    position: relative;
   }
   /* Bump in-book typography so the larger frame feels substantial */
   .section p { font-size: 17px; line-height: 2.05; }
@@ -1012,6 +1014,33 @@ body {
   .toc a { font-size: 16px; }
   .toc .toc-sub { font-size: 12px; }
   .references { font-size: 14px; }
+  .page-indicator { bottom: max(14px, calc(50vh - 440px)); }
+}
+
+/* Two-page spread on large screens: an open-book layout */
+@media (min-width: 1100px) {
+  .container {
+    width: min(96vw, 1180px);
+    max-width: 1180px;
+    height: min(96vh, 880px);
+    max-height: 880px;
+  }
+  /* Centered binding line that ties the two pages into a spread */
+  .container::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      rgba(28,24,20,.18) 12%,
+      rgba(28,24,20,.18) 88%,
+      transparent 100%);
+    box-shadow: 0 0 12px rgba(28,24,20,.08);
+    pointer-events: none;
+    z-index: 5;
+  }
   .page-indicator { bottom: max(14px, calc(50vh - 440px)); }
 }
 
@@ -1410,11 +1439,23 @@ body {
   const indicator = document.getElementById('pageIndicator');
   if (!book) return;
 
-  const pageWidth = () => book.clientWidth;
+  // How many "book pages" are visible at once: 1 on mobile / small desktop,
+  // 2 on wide desktop (open-book spread).
+  const viewPagesCount = () =>
+    window.matchMedia('(min-width: 1100px)').matches ? 2 : 1;
+
+  // Width of a single book page (= one tategaki column-pack).
+  const pageWidth = () => book.clientWidth / viewPagesCount();
   const blocks = () =>
     document.querySelectorAll('.container > .masthead, .container > .toc, .container > article > .section');
 
-  // --- snap each top-level block to a whole-number multiple of viewport width
+  // expose the live page width to CSS so column-width tracks the
+  // constrained book viewport on desktop, not the full window.
+  function syncPageVar() {
+    document.documentElement.style.setProperty('--page-w', pageWidth() + 'px');
+  }
+
+  // --- snap each top-level block to a whole-number multiple of single-page width
   // so total page count is exact and section transitions land on page edges,
   // even though each section internally uses multi-column for break protection.
   function alignBlocksToPages() {
@@ -1432,11 +1473,15 @@ body {
 
   // --- page indicator ---
   function updateIndicator() {
-    const w = pageWidth();
-    const total = Math.max(1, Math.round(book.scrollWidth / w));
+    const pw = pageWidth();
+    const total = Math.max(1, Math.round(book.scrollWidth / pw));
     // With flex-direction: row-reverse, scrollLeft is 0 at the cover and goes negative as we advance.
-    const current = Math.round(Math.abs(book.scrollLeft) / w) + 1;
-    indicator.textContent = `${Math.min(current, total)} / ${total}`;
+    const startPage = Math.round(Math.abs(book.scrollLeft) / pw) + 1;
+    const span = viewPagesCount();
+    const endPage = Math.min(startPage + span - 1, total);
+    indicator.textContent = span === 1
+      ? `${Math.min(startPage, total)} / ${total}`
+      : `${startPage}–${endPage} / ${total}`;
   }
 
   // --- step navigation ---
@@ -1446,7 +1491,8 @@ body {
   function step(dir) {
     if (scrollLock) return;
     scrollLock = true;
-    book.scrollBy({ left: -dir * pageWidth(), behavior: 'smooth' });
+    // Always step by one full view (1 page on mobile, 2 pages in spread mode)
+    book.scrollBy({ left: -dir * book.clientWidth, behavior: 'smooth' });
     setTimeout(() => { scrollLock = false; }, 380);
   }
 
@@ -1468,12 +1514,6 @@ body {
 
   // --- indicator updates ---
   book.addEventListener('scroll', updateIndicator, { passive: true });
-
-  // expose the live page (container) width to CSS so column-width
-  // tracks the constrained book viewport on desktop, not the full window.
-  function syncPageVar() {
-    document.documentElement.style.setProperty('--page-w', book.clientWidth + 'px');
-  }
 
   // --- initial alignment (after fonts settle) + resize handling ---
   function settle() {
