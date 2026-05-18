@@ -33,7 +33,7 @@
     </div>
 
     <div class="shelves">
-      <article class="shelf-card reveal" data-shelf="01" aria-expanded="false">
+      <article class="shelf-card reveal" id="shelf-01" data-shelf="01" aria-expanded="false">
         <div class="shelf-head" role="button" tabindex="0" aria-controls="shelf-01-body">
           <div class="shelf-plate">
             <span class="shelf-no">01</span><span class="shelf-name">ラベルで人を括る</span>
@@ -41,11 +41,37 @@
           </div>
           <div class="shelf-stack">
             <div class="spines">
-              <a class="spine vol" href="essays/books/shijichu_psychology.html" title="「指示厨」の心理学" aria-label="本：「指示厨」の心理学" style="--spine-h:80%; --spine-c1:#5c2620; --spine-c2:#2e1310;"><span class="spine-title">指示厨の心理</span></a>
-              <span class="spine planned" title="〇〇警察 ― マナー警察と考察警察（予定）" aria-hidden="true" style="--spine-h:60%;"><span class="spine-title">〇〇警察</span></span>
-              <span class="spine planned" title="ガチ勢／エンジョイ勢（予定）" aria-hidden="true" style="--spine-h:100%;"><span class="spine-title">ガチ／エンジョイ</span></span>
-              <span class="spine planned" title="古参／新規（予定）" aria-hidden="true" style="--spine-h:70%;"><span class="spine-title">古参／新規</span></span>
-              <span class="spine planned" title="信者／アンチ（予定）" aria-hidden="true" style="--spine-h:80%;"><span class="spine-title">信者／アンチ</span></span>
+              <a class="spine vol" href="essays/books/shijichu_psychology.html"
+                 title="「指示厨」の心理学" aria-label="「指示厨」の心理学"
+                 data-desc="なぜ人は他人のコントローラーを横から奪いたくなるのか。下方比較・Dunning-Kruger・準社会的関係・正義中毒 ── 11 の駆動力を心理学・社会学・脳科学から解剖した長文論考。"
+                 data-meta="long-form · 心理学"
+                 style="--spine-h:80%; --spine-c1:#5c2620; --spine-c2:#2e1310;"
+              ><span class="spine-title">指示厨の心理</span></a>
+              <span class="spine planned" role="button" tabindex="0"
+                 title="〇〇警察 ― マナー警察と考察警察"
+                 aria-label="〇〇警察 ― マナー警察と考察警察（予定）"
+                 data-desc="「正しさ」を執行する側に回ることで得られる快感。中野信子の正義中毒を別角度から扱う。"
+                 data-meta="予定 · sociology"
+                 style="--spine-h:60%;"
+              ><span class="spine-title">〇〇警察</span></span>
+              <span class="spine planned" role="button" tabindex="0"
+                 title="ガチ勢／エンジョイ勢" aria-label="ガチ勢／エンジョイ勢（予定）"
+                 data-desc="同じ遊びを違う温度でやっているだけなのに、どうして相互に「劣化版」だと感じてしまうのか。"
+                 data-meta="予定 · game culture"
+                 style="--spine-h:100%;"
+              ><span class="spine-title">ガチ／エンジョイ</span></span>
+              <span class="spine planned" role="button" tabindex="0"
+                 title="古参／新規" aria-label="古参／新規（予定）"
+                 data-desc="時間軸でファンを二分するラベリングの磁力。所属の証明と参入障壁の同居。"
+                 data-meta="予定 · fandom"
+                 style="--spine-h:70%;"
+              ><span class="spine-title">古参／新規</span></span>
+              <span class="spine planned" role="button" tabindex="0"
+                 title="信者／アンチ" aria-label="信者／アンチ（予定）"
+                 data-desc="中間の意見が見えなくなる二極化の構造。プラットフォーム設計が増幅させる純粋化のループ。"
+                 data-meta="予定 · online culture"
+                 style="--spine-h:80%;"
+              ><span class="spine-title">信者／アンチ</span></span>
             </div>
             <div class="shelf-board" aria-hidden="true"></div>
           </div>
@@ -60,64 +86,12 @@
                 <p>この棚に並ぶ本は、すべてこの<em class="accent-em">「一語で括る」</em>という操作を扱う。〇〇厨・〇〇警察・ガチ勢/エンジョイ勢・古参/新規・信者/アンチ ── 表面の題材はゲーム、ネット文化、ファンコミュニティと、ばらばらに見える。だが機構は同じだ。<b class="muted-strong">名指しが、観察を打ち切らせる。</b></p>
                 <p>この棚を読むとき、注意すべきは自分自身の使うラベルだ。指示厨を語る人もまた、別のラベル（「指示厨警察」）で括られうる。ラベルを貼る側もまた、貼られる側だ。</p>
               </div>
-              <ul class="books-list">
-                <li>
-                  <a class="book-row" href="essays/books/shijichu_psychology.html">
-                    <span class="book-mark">i</span>
-                    <span class="book-info">
-                      <h4>「指示厨」の心理学</h4>
-                      <p class="book-sub">なぜ人は他人のコントローラーを横から奪いたくなるのか。下方比較・Dunning-Kruger・準社会的関係・正義中毒 ── 11 の駆動力を心理学・社会学・脳科学から解剖した長文論考。</p>
-                      <span class="book-meta">long-form &middot; 心理学</span>
-                    </span>
-                  </a>
-                </li>
-                <li>
-                  <span class="book-row planned">
-                    <span class="book-mark">ii</span>
-                    <span class="book-info">
-                      <h4>〇〇警察 ― マナー警察と考察警察</h4>
-                      <p class="book-sub">「正しさ」を執行する側に回ることで得られる快感。中野信子の正義中毒を別角度から扱う。</p>
-                      <span class="book-meta">予定 &middot; sociology</span>
-                    </span>
-                  </span>
-                </li>
-                <li>
-                  <span class="book-row planned">
-                    <span class="book-mark">iii</span>
-                    <span class="book-info">
-                      <h4>ガチ勢／エンジョイ勢</h4>
-                      <p class="book-sub">同じ遊びを違う温度でやっているだけなのに、どうして相互に「劣化版」だと感じてしまうのか。</p>
-                      <span class="book-meta">予定 &middot; game culture</span>
-                    </span>
-                  </span>
-                </li>
-                <li>
-                  <span class="book-row planned">
-                    <span class="book-mark">iv</span>
-                    <span class="book-info">
-                      <h4>古参／新規</h4>
-                      <p class="book-sub">時間軸でファンを二分するラベリングの磁力。所属の証明と参入障壁の同居。</p>
-                      <span class="book-meta">予定 &middot; fandom</span>
-                    </span>
-                  </span>
-                </li>
-                <li>
-                  <span class="book-row planned">
-                    <span class="book-mark">v</span>
-                    <span class="book-info">
-                      <h4>信者／アンチ</h4>
-                      <p class="book-sub">中間の意見が見えなくなる二極化の構造。プラットフォーム設計が増幅させる純粋化のループ。</p>
-                      <span class="book-meta">予定 &middot; online culture</span>
-                    </span>
-                  </span>
-                </li>
-              </ul>
             </div>
           </div>
         </div>
       </article>
 
-      <article class="shelf-card reveal" data-shelf="02" aria-expanded="false">
+      <article class="shelf-card reveal" id="shelf-02" data-shelf="02" aria-expanded="false">
         <div class="shelf-head" role="button" tabindex="0" aria-controls="shelf-02-body">
           <div class="shelf-plate">
             <span class="shelf-no">02</span><span class="shelf-name">「正しさ」のすれ違い</span>
@@ -125,10 +99,30 @@
           </div>
           <div class="shelf-stack">
             <div class="spines">
-              <a class="spine vol" href="essays/books/shinpan_no_inai_shiai.html" title="審判のいない試合" aria-label="本：審判のいない試合" style="--spine-h:80%; --spine-c1:#1f3a4d; --spine-c2:#0e1c28;"><span class="spine-title">審判なき試合</span></a>
-              <span class="spine planned" title="AI 絵師論争（予定）" aria-hidden="true" style="--spine-h:80%;"><span class="spine-title">AI絵師論争</span></span>
-              <span class="spine planned" title="攻略の「最適解」（予定）" aria-hidden="true" style="--spine-h:80%;"><span class="spine-title">攻略の最適解</span></span>
-              <span class="spine planned" title="ネタバレ是非（予定）" aria-hidden="true" style="--spine-h:80%;"><span class="spine-title">ネタバレ是非</span></span>
+              <a class="spine vol" href="essays/books/shinpan_no_inai_shiai.html"
+                 title="審判のいない試合" aria-label="審判のいない試合"
+                 data-desc="正しさのすれ違いはなぜ解けないのか。フレームA（当事者の問題）とフレームB（構造の問題）を並走させ、§4 で論考自身のフレームBへの偏りを開示する。棚02 の土台石。"
+                 data-meta="framework essay · 規範領域"
+                 style="--spine-h:80%; --spine-c1:#1f3a4d; --spine-c2:#0e1c28;"
+              ><span class="spine-title">審判なき試合</span></a>
+              <span class="spine planned" role="button" tabindex="0"
+                 title="AI 絵師論争" aria-label="AI 絵師論争（予定）"
+                 data-desc="技術の正しさ／労働の正しさ／芸術の正しさ／倫理の正しさ ── 同時並行で進む別物の議論を分解する。"
+                 data-meta="予定 · AI &amp; art"
+                 style="--spine-h:80%;"
+              ><span class="spine-title">AI絵師論争</span></span>
+              <span class="spine planned" role="button" tabindex="0"
+                 title="攻略の「最適解」" aria-label="攻略の「最適解」（予定）"
+                 data-desc="効率の正しさと体験の正しさが衝突する典型例。指示厨論考の§7 を独立した一冊に拡張する。"
+                 data-meta="予定 · game culture"
+                 style="--spine-h:80%;"
+              ><span class="spine-title">攻略の最適解</span></span>
+              <span class="spine planned" role="button" tabindex="0"
+                 title="ネタバレ是非" aria-label="ネタバレ是非（予定）"
+                 data-desc="「事実を述べただけだ」と「あなたは私の体験を壊した」が同じ机に座る、奇妙な争い。"
+                 data-meta="予定 · experience &amp; ethics"
+                 style="--spine-h:80%;"
+              ><span class="spine-title">ネタバレ是非</span></span>
             </div>
             <div class="shelf-board" aria-hidden="true"></div>
           </div>
@@ -143,66 +137,39 @@
                 <p>異なる領域同士が衝突したとき、両者が共に認める「上位の裁定者」がどこにも存在しない。だから誠実で頭のいい二人がぶつかっても、議論は永遠に解けない。これは欠陥ではなく、対立の<b class="muted-strong">型</b>そのものの性質である。</p>
                 <p>この棚に並ぶ本は、すべて「何の正しさの話をしているか」が曖昧なまま起きている対立を扱う。土台石として「審判のいない試合」を据え、後続の本はそのレンズの個別適用例として読める設計になっている。</p>
               </div>
-              <ul class="books-list">
-                <li>
-                  <a class="book-row" href="essays/books/shinpan_no_inai_shiai.html">
-                    <span class="book-mark">i</span>
-                    <span class="book-info">
-                      <h4>審判のいない試合</h4>
-                      <p class="book-sub">正しさのすれ違いはなぜ解けないのか。フレームA（当事者の問題）とフレームB（構造の問題）を並走させ、§4 で論考自身のフレームBへの偏りを開示する。棚02 の土台石。</p>
-                      <span class="book-meta">framework essay &middot; 規範領域</span>
-                    </span>
-                  </a>
-                </li>
-                <li>
-                  <span class="book-row planned">
-                    <span class="book-mark">ii</span>
-                    <span class="book-info">
-                      <h4>AI 絵師論争</h4>
-                      <p class="book-sub">技術の正しさ／労働の正しさ／芸術の正しさ／倫理の正しさ ── 同時並行で進む別物の議論を分解する。</p>
-                      <span class="book-meta">予定 &middot; AI &amp; art</span>
-                    </span>
-                  </span>
-                </li>
-                <li>
-                  <span class="book-row planned">
-                    <span class="book-mark">iii</span>
-                    <span class="book-info">
-                      <h4>攻略の「最適解」</h4>
-                      <p class="book-sub">効率の正しさと体験の正しさが衝突する典型例。指示厨論考の§7 を独立した一冊に拡張する。</p>
-                      <span class="book-meta">予定 &middot; game culture</span>
-                    </span>
-                  </span>
-                </li>
-                <li>
-                  <span class="book-row planned">
-                    <span class="book-mark">iv</span>
-                    <span class="book-info">
-                      <h4>ネタバレ是非</h4>
-                      <p class="book-sub">「事実を述べただけだ」と「あなたは私の体験を壊した」が同じ机に座る、奇妙な争い。</p>
-                      <span class="book-meta">予定 &middot; experience &amp; ethics</span>
-                    </span>
-                  </span>
-                </li>
-              </ul>
             </div>
           </div>
         </div>
       </article>
 
-      <article class="shelf-card reveal" data-shelf="03" aria-expanded="false">
+      <article class="shelf-card reveal" id="shelf-03" data-shelf="03" aria-expanded="false">
         <div class="shelf-head" role="button" tabindex="0" aria-controls="shelf-03-body">
           <div class="shelf-plate">
             <span class="shelf-no">03</span><span class="shelf-name">わかりやすさの罠</span>
             <span class="shelf-toggle" aria-hidden="true">&#9662;</span>
           </div>
-          <div class="shelf-stack" aria-hidden="true">
+          <div class="shelf-stack">
             <div class="spines">
-              <span class="spine planned" title="バズる情報の構造（予定）" style="--spine-h:70%;"><span class="spine-title">バズる構造</span></span>
-              <span class="spine planned" title="二次情報の独立性の錯覚（予定）" style="--spine-h:80%;"><span class="spine-title">二次情報の罠</span></span>
-              <span class="spine planned" title="要約で失われるもの（予定）" style="--spine-h:70%;"><span class="spine-title">要約の損失</span></span>
+              <span class="spine planned" role="button" tabindex="0"
+                 title="バズる情報の構造" aria-label="バズる情報の構造（予定）"
+                 data-desc="拡散される情報には共通の文法がある ── 断定・二項対立・感情のトリガー。「面白さ」と「正確さ」が反比例する設計上の理由を扱う。"
+                 data-meta="予定 · media"
+                 style="--spine-h:70%;"
+              ><span class="spine-title">バズる構造</span></span>
+              <span class="spine planned" role="button" tabindex="0"
+                 title="二次情報の独立性の錯覚" aria-label="二次情報の独立性の錯覚（予定）"
+                 data-desc="十のソースが同じことを言っていても、もとの一次資料はひとつかもしれない。孫引きが「多重の証拠」に見える錯覚を解剖する。"
+                 data-meta="予定 · epistemology"
+                 style="--spine-h:80%;"
+              ><span class="spine-title">二次情報の罠</span></span>
+              <span class="spine planned" role="button" tabindex="0"
+                 title="要約で失われるもの" aria-label="要約で失われるもの（予定）"
+                 data-desc="「三行でまとめる」とき、最初に犠牲になるのは留保と例外。それでも要約には価値がある ── ただし「何が削られたか」を一緒に渡せるなら。"
+                 data-meta="予定 · communication"
+                 style="--spine-h:70%;"
+              ><span class="spine-title">要約の損失</span></span>
             </div>
-            <div class="shelf-board"></div>
+            <div class="shelf-board" aria-hidden="true"></div>
           </div>
           <p class="shelf-axis">可読性と正確性のトレードオフ。要約・二次情報・バズる構造の中で取り落とされるもの。</p>
           <p class="shelf-count">蔵書 <b>0</b> 冊 <span class="dot">·</span> 予定 <b>3</b> 冊</p>
@@ -215,57 +182,45 @@
                 <p>そして「わかりやすさ」を提供する側だけが罠にかかるのではない。受け手もまた、自分の理解できる形に圧縮された情報を「真実」だと感じてしまう。フィード文化はそれを加速させる ── タイトルだけで判断し、要約だけで議論する。一次資料に当たる手間を払う人は減っていく。</p>
                 <p>この棚に並ぶ本は、すべて「圧縮と歪曲は同じ操作の表と裏である」という前提から始まる。何を残し、何を切ったかを意識的に開示することは、文庫の他の論考に通底する作法でもある。</p>
               </div>
-              <ul class="books-list">
-                <li>
-                  <span class="book-row planned">
-                    <span class="book-mark">i</span>
-                    <span class="book-info">
-                      <h4>バズる情報の構造</h4>
-                      <p class="book-sub">拡散される情報には共通の文法がある ── 断定・二項対立・感情のトリガー。「面白さ」と「正確さ」が反比例する設計上の理由を扱う。</p>
-                      <span class="book-meta">予定 &middot; media</span>
-                    </span>
-                  </span>
-                </li>
-                <li>
-                  <span class="book-row planned">
-                    <span class="book-mark">ii</span>
-                    <span class="book-info">
-                      <h4>二次情報の独立性の錯覚</h4>
-                      <p class="book-sub">十のソースが同じことを言っていても、もとの一次資料はひとつかもしれない。孫引きが「多重の証拠」に見える錯覚を解剖する。</p>
-                      <span class="book-meta">予定 &middot; epistemology</span>
-                    </span>
-                  </span>
-                </li>
-                <li>
-                  <span class="book-row planned">
-                    <span class="book-mark">iii</span>
-                    <span class="book-info">
-                      <h4>要約で失われるもの</h4>
-                      <p class="book-sub">「三行でまとめる」とき、最初に犠牲になるのは留保と例外。それでも要約には価値がある ── ただし「何が削られたか」を一緒に渡せるなら。</p>
-                      <span class="book-meta">予定 &middot; communication</span>
-                    </span>
-                  </span>
-                </li>
-              </ul>
             </div>
           </div>
         </div>
       </article>
 
-      <article class="shelf-card reveal" data-shelf="04" aria-expanded="false">
+      <article class="shelf-card reveal" id="shelf-04" data-shelf="04" aria-expanded="false">
         <div class="shelf-head" role="button" tabindex="0" aria-controls="shelf-04-body">
           <div class="shelf-plate">
             <span class="shelf-no">04</span><span class="shelf-name">趣味の評価軸</span>
             <span class="shelf-toggle" aria-hidden="true">&#9662;</span>
           </div>
-          <div class="shelf-stack" aria-hidden="true">
+          <div class="shelf-stack">
             <div class="spines">
-              <span class="spine planned" title="「うまい／下手」（予定）" style="--spine-h:80%;"><span class="spine-title">うまい／下手</span></span>
-              <span class="spine planned" title="「リアル」とは何か（予定）" style="--spine-h:70%;"><span class="spine-title">リアルとは</span></span>
-              <span class="spine planned" title="模写と盗用（予定）" style="--spine-h:70%;"><span class="spine-title">模写と盗用</span></span>
-              <span class="spine planned" title="NPR に「正解」はあるのか（予定）" style="--spine-h:80%;"><span class="spine-title">NPRの正解</span></span>
+              <span class="spine planned" role="button" tabindex="0"
+                 title="「うまい／下手」" aria-label="「うまい／下手」（予定）"
+                 data-desc="技術評価の言葉に潜む、複数の評価軸（精度・速度・面白さ・らしさ）の癒着を分解する。"
+                 data-meta="予定 · craft"
+                 style="--spine-h:80%;"
+              ><span class="spine-title">うまい／下手</span></span>
+              <span class="spine planned" role="button" tabindex="0"
+                 title="「リアル」とは何か" aria-label="「リアル」とは何か（予定）"
+                 data-desc="写実・物理・知覚・印象 ── 複数の「リアル」が混ざって使われている。NPRが扱っているのはそのどれなのか。"
+                 data-meta="予定 · NPR &amp; rendering"
+                 style="--spine-h:70%;"
+              ><span class="spine-title">リアルとは</span></span>
+              <span class="spine planned" role="button" tabindex="0"
+                 title="模写と盗用" aria-label="模写と盗用（予定）"
+                 data-desc="引用、参照、模倣、盗用 ── 連続スペクトル上のどこに線を引くかという、合意のない問題。"
+                 data-meta="予定 · creative ethics"
+                 style="--spine-h:70%;"
+              ><span class="spine-title">模写と盗用</span></span>
+              <span class="spine planned" role="button" tabindex="0"
+                 title="NPR に「正解」はあるのか" aria-label="NPR に「正解」はあるのか（予定）"
+                 data-desc="非写実レンダリングの目標は、写実とは違う何かである ── では、その「何か」は誰が決めているのか。"
+                 data-meta="予定 · NPR"
+                 style="--spine-h:80%;"
+              ><span class="spine-title">NPRの正解</span></span>
             </div>
-            <div class="shelf-board"></div>
+            <div class="shelf-board" aria-hidden="true"></div>
           </div>
           <p class="shelf-axis">「うまい/下手」「リアル」「模写と盗用」── 制作者がぶつかる、客観に見えて主観の評価ルール。</p>
           <p class="shelf-count">蔵書 <b>0</b> 冊 <span class="dot">·</span> 予定 <b>4</b> 冊</p>
@@ -278,48 +233,6 @@
                 <p>これは「すべては主観だから評価は無意味だ」という相対主義に着地するための話ではない。むしろ逆で、評価軸の出自を意識すると、自分が何を測りたくて何を測っているのかが見え、批評の精度が上がる。<b class="muted-strong">趣味の客観化は悪ではない ── 客観化された趣味を「事実」と取り違えることが、罠なのだ。</b></p>
                 <p>この棚に並ぶ本は、制作者と鑑賞者の両方に関わる。Anko さん自身の TD としての関心 ── セルルック、NPR、配色、模写 ── が、ここに直接接続する。</p>
               </div>
-              <ul class="books-list">
-                <li>
-                  <span class="book-row planned">
-                    <span class="book-mark">i</span>
-                    <span class="book-info">
-                      <h4>「うまい／下手」</h4>
-                      <p class="book-sub">技術評価の言葉に潜む、複数の評価軸（精度・速度・面白さ・らしさ）の癒着を分解する。</p>
-                      <span class="book-meta">予定 &middot; craft</span>
-                    </span>
-                  </span>
-                </li>
-                <li>
-                  <span class="book-row planned">
-                    <span class="book-mark">ii</span>
-                    <span class="book-info">
-                      <h4>「リアル」とは何か</h4>
-                      <p class="book-sub">写実・物理・知覚・印象 ── 複数の「リアル」が混ざって使われている。NPRが扱っているのはそのどれなのか。</p>
-                      <span class="book-meta">予定 &middot; NPR &amp; rendering</span>
-                    </span>
-                  </span>
-                </li>
-                <li>
-                  <span class="book-row planned">
-                    <span class="book-mark">iii</span>
-                    <span class="book-info">
-                      <h4>模写と盗用</h4>
-                      <p class="book-sub">引用、参照、模倣、盗用 ── 連続スペクトル上のどこに線を引くかという、合意のない問題。</p>
-                      <span class="book-meta">予定 &middot; creative ethics</span>
-                    </span>
-                  </span>
-                </li>
-                <li>
-                  <span class="book-row planned">
-                    <span class="book-mark">iv</span>
-                    <span class="book-info">
-                      <h4>NPR に「正解」はあるのか</h4>
-                      <p class="book-sub">非写実レンダリングの目標は、写実とは違う何かである ── では、その「何か」は誰が決めているのか。</p>
-                      <span class="book-meta">予定 &middot; NPR</span>
-                    </span>
-                  </span>
-                </li>
-              </ul>
             </div>
           </div>
         </div>
@@ -438,34 +351,21 @@
   let coverReturnFocus = null;
 
   function openCover(spineEl) {
-    const shelf = spineEl.closest('.shelf-card');
-    if (!shelf) return;
-    const spines = Array.from(shelf.querySelectorAll('.spine'));
-    const idx = spines.indexOf(spineEl);
-    const li = shelf.querySelectorAll('.books-list > li')[idx];
-    if (!li) return;
+    const isPlanned = spineEl.classList.contains('planned');
+    const href = isPlanned ? null : spineEl.getAttribute('href');
 
-    const titleEl = li.querySelector('.book-info h4');
-    const subEl   = li.querySelector('.book-sub');
-    const metaEl  = li.querySelector('.book-meta');
-    const linkEl  = li.querySelector('a.book-row');
+    coverTitle.textContent = spineEl.getAttribute('title') || '';
+    coverDesc.textContent  = spineEl.dataset.desc || '';
+    coverMeta.textContent  = spineEl.dataset.meta || '';
 
-    coverTitle.textContent = titleEl ? titleEl.textContent.trim() : '';
-    coverDesc.textContent  = subEl   ? subEl.textContent.trim()   : '';
-    coverMeta.textContent  = metaEl  ? metaEl.textContent.trim()  : '';
-
+    coverFront.classList.toggle('planned', isPlanned);
     const c1 = spineEl.style.getPropertyValue('--spine-c1').trim();
     const c2 = spineEl.style.getPropertyValue('--spine-c2').trim();
-    const isPlanned = !linkEl;
-    coverFront.classList.toggle('planned', isPlanned);
-    if (!isPlanned && c1 && c2) {
-      coverFront.style.background = `linear-gradient(180deg, ${c1}, ${c2})`;
-    } else {
-      coverFront.style.background = '';
-    }
+    coverFront.style.background = (!isPlanned && c1 && c2)
+      ? `linear-gradient(180deg, ${c1}, ${c2})` : '';
 
-    if (linkEl) {
-      coverAction.href = linkEl.getAttribute('href');
+    if (href) {
+      coverAction.href = href;
       coverAction.classList.remove('is-planned');
       coverAction.textContent = '開く →';
       coverAction.removeAttribute('aria-disabled');
@@ -485,9 +385,7 @@
   function closeCover() {
     coverOverlay.hidden = true;
     document.body.style.overflow = '';
-    if (coverReturnFocus && coverReturnFocus.focus) {
-      coverReturnFocus.focus();
-    }
+    coverReturnFocus?.focus?.();
   }
 
   document.querySelectorAll('.spine').forEach(spine => {
@@ -496,12 +394,6 @@
       e.stopPropagation();
       openCover(spine);
     });
-    if (spine.classList.contains('planned')) {
-      spine.setAttribute('tabindex', '0');
-      spine.setAttribute('role', 'button');
-      const t = spine.getAttribute('title');
-      if (t && !spine.hasAttribute('aria-label')) spine.setAttribute('aria-label', t);
-    }
     spine.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -519,6 +411,14 @@
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !coverOverlay.hidden) closeCover();
   });
+
+  // 本ページからのパンくず（index.html#shelf-01 など）で着地時、該当棚を自動展開
+  if (location.hash.startsWith('#shelf-')) {
+    const target = document.querySelector(location.hash);
+    if (target?.classList.contains('shelf-card')) {
+      setTimeout(() => openCard(target), 200);
+    }
+  }
 </script>
 </body>
 </html>
