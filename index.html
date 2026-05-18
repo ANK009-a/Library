@@ -356,6 +356,25 @@
 
 </div>
 
+<div class="cover-overlay" id="cover-overlay" hidden>
+  <button class="cover-backdrop" type="button" aria-label="閉じる" tabindex="-1"></button>
+  <article class="cover-card" role="dialog" aria-modal="true" aria-labelledby="cover-title">
+    <button class="cover-close" type="button" aria-label="閉じる">&times;</button>
+    <div class="cover-front" id="cover-front">
+      <div class="cover-band cover-band-top"></div>
+      <h3 class="cover-title" id="cover-title"></h3>
+      <div class="cover-emblem" aria-hidden="true">&#10070;</div>
+      <div class="cover-foot">
+        <div class="cover-divider"></div>
+        <p class="cover-desc" id="cover-desc"></p>
+        <p class="cover-meta" id="cover-meta"></p>
+      </div>
+      <div class="cover-band cover-band-bottom"></div>
+    </div>
+    <a class="cover-action" id="cover-action" href="#">開く &rarr;</a>
+  </article>
+</div>
+
 <script>
   const bar = document.getElementById('bar');
   const onScroll = () => {
@@ -394,14 +413,8 @@
     const head = card.querySelector('.shelf-head');
     if (!head) return;
     head.addEventListener('click', (e) => {
-      // 既刊の本（リンク）をタップした場合は、navigation に任せる
-      if (e.target.closest('a.spine')) return;
-      // 予定の背表紙をタップした場合は、必ず開く（閉じない）
-      if (e.target.closest('.spine.planned')) {
-        openCard(card);
-        return;
-      }
-      // それ以外は通常のトグル
+      // 背表紙のタップは表紙モーダル側で処理されるためここでは無視
+      if (e.target.closest('.spine')) return;
       const wasOpen = card.getAttribute('aria-expanded') === 'true';
       cards.forEach(c => c.setAttribute('aria-expanded', 'false'));
       if (!wasOpen) openCard(card);
@@ -412,6 +425,98 @@
         head.click();
       }
     });
+  });
+
+  // 表紙モーダル: 背表紙をタップすると本の表紙が現れる
+  const coverOverlay = document.getElementById('cover-overlay');
+  const coverTitle = document.getElementById('cover-title');
+  const coverDesc = document.getElementById('cover-desc');
+  const coverMeta = document.getElementById('cover-meta');
+  const coverFront = document.getElementById('cover-front');
+  const coverAction = document.getElementById('cover-action');
+  let coverReturnFocus = null;
+
+  function openCover(spineEl) {
+    const shelf = spineEl.closest('.shelf-card');
+    if (!shelf) return;
+    const spines = Array.from(shelf.querySelectorAll('.spine'));
+    const idx = spines.indexOf(spineEl);
+    const li = shelf.querySelectorAll('.books-list > li')[idx];
+    if (!li) return;
+
+    const titleEl = li.querySelector('.book-info h4');
+    const subEl   = li.querySelector('.book-sub');
+    const metaEl  = li.querySelector('.book-meta');
+    const linkEl  = li.querySelector('a.book-row');
+
+    coverTitle.textContent = titleEl ? titleEl.textContent.trim() : '';
+    coverDesc.textContent  = subEl   ? subEl.textContent.trim()   : '';
+    coverMeta.textContent  = metaEl  ? metaEl.textContent.trim()  : '';
+
+    const c1 = spineEl.style.getPropertyValue('--spine-c1').trim();
+    const c2 = spineEl.style.getPropertyValue('--spine-c2').trim();
+    const isPlanned = !linkEl;
+    coverFront.classList.toggle('planned', isPlanned);
+    if (!isPlanned && c1 && c2) {
+      coverFront.style.background = `linear-gradient(180deg, ${c1}, ${c2})`;
+    } else {
+      coverFront.style.background = '';
+    }
+
+    if (linkEl) {
+      coverAction.href = linkEl.getAttribute('href');
+      coverAction.classList.remove('is-planned');
+      coverAction.textContent = '開く →';
+      coverAction.removeAttribute('aria-disabled');
+    } else {
+      coverAction.removeAttribute('href');
+      coverAction.classList.add('is-planned');
+      coverAction.textContent = '（執筆中）';
+      coverAction.setAttribute('aria-disabled', 'true');
+    }
+
+    coverReturnFocus = spineEl;
+    coverOverlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => coverOverlay.querySelector('.cover-close')?.focus(), 50);
+  }
+
+  function closeCover() {
+    coverOverlay.hidden = true;
+    document.body.style.overflow = '';
+    if (coverReturnFocus && coverReturnFocus.focus) {
+      coverReturnFocus.focus();
+    }
+  }
+
+  document.querySelectorAll('.spine').forEach(spine => {
+    spine.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openCover(spine);
+    });
+    if (spine.classList.contains('planned')) {
+      spine.setAttribute('tabindex', '0');
+      spine.setAttribute('role', 'button');
+      const t = spine.getAttribute('title');
+      if (t && !spine.hasAttribute('aria-label')) spine.setAttribute('aria-label', t);
+    }
+    spine.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        e.stopPropagation();
+        openCover(spine);
+      }
+    });
+  });
+
+  coverOverlay.querySelector('.cover-backdrop')?.addEventListener('click', closeCover);
+  coverOverlay.querySelector('.cover-close')?.addEventListener('click', closeCover);
+  coverAction.addEventListener('click', (e) => {
+    if (coverAction.classList.contains('is-planned')) e.preventDefault();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !coverOverlay.hidden) closeCover();
   });
 </script>
 </body>
