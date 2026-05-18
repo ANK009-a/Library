@@ -684,6 +684,95 @@ html, body {
   break-inside: avoid;
 }
 
+/* ============================================================
+   Tategaki overrides for elements using physical-axis CSS
+   (lists, pullquote, references) — translate left/top to logical
+   inline-start so bullets land at the head of the vertical column
+   instead of stacking sideways.
+   ============================================================ */
+
+/* Lists in the body: bullets become inline marks at the top of
+   each column-style li, not absolute marks on the visual left. */
+.section ul, .section ol {
+  padding-left: 0;
+}
+.section ul li, .section ol li {
+  padding-left: 0;
+  padding-inline-start: 0;
+  margin-bottom: 0;
+  margin-inline-end: 1.2em; /* gap between list items (= bottom gap in tategaki) */
+  position: static;
+}
+.section ul li::before {
+  content: '・';
+  position: static;
+  width: auto; height: auto;
+  background: none; border-radius: 0;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 0;
+  margin-inline-end: 0.1em;
+}
+.section ol li::before {
+  position: static;
+  margin: 0;
+  margin-inline-end: 0.3em;
+}
+
+/* References block at the end of the essay */
+.references {
+  border-top: none;
+  border-inline-start: 1px solid var(--rule);
+  padding-block: 0;
+  padding-inline: 2.4em 0;
+}
+.references h3 {
+  margin: 0 0 1.2em;
+  padding: 0;
+}
+.references ul { padding: 0; }
+.references ul li {
+  padding-left: 0;
+  padding-inline-start: 0;
+  margin-bottom: 0;
+  margin-inline-end: 1.4em;
+  position: static;
+}
+.references ul li::before {
+  content: '— ';
+  position: static;
+  left: auto;
+  color: var(--accent);
+  margin-inline-end: 0.2em;
+}
+
+/* Pullquote: vertical accent goes on the inline-start (top in tategaki) */
+.pullquote {
+  margin: 1em 0;
+  padding: 1.6em 2em;
+  border-left: none;
+  border-inline-start: 3px solid var(--accent);
+  background: linear-gradient(180deg, var(--accent-soft), transparent 80%);
+}
+.pullquote::before {
+  display: none;
+}
+
+/* Section divider stays simple */
+.divider { margin: 2.4em 0; }
+
+/* Closing block: keep the double rule but make sure it sits on the
+   leading edge of its column, not above it */
+.closing {
+  margin-top: 4em;
+  padding: 2em 0;
+  border-top: none;
+  border-inline-start: 4px double var(--rule);
+  padding-inline-start: 2em;
+  text-align: start;
+}
+.closing .mark { margin-bottom: 0.6em; }
+
 /* ---- masthead in tategaki ---- */
 .masthead {
   border-bottom: none;
