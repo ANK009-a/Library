@@ -356,7 +356,18 @@ section.block + section.block { border-top: 1px solid var(--gold-faint); }
   height: var(--spine-h, 80%);
   border-radius: 1px 1px 0 0;
   position: relative;
-  transition: transform .3s ease;
+  transition: transform .3s ease, filter .25s ease, border-color .25s ease;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+a.spine.vol { cursor: pointer; }
+.spine.planned { cursor: pointer; }
+/* タップ範囲を視覚サイズより少し広く取る */
+.spine::after {
+  content: "";
+  position: absolute;
+  inset: -6px -4px 0 -4px;
 }
 .spine.vol {
   background:
@@ -366,17 +377,16 @@ section.block + section.block { border-top: 1px solid var(--gold-faint); }
     inset 0 1px 0 rgba(255,255,255,.06),
     0 1px 0 rgba(0,0,0,.6);
 }
-.spine.vol::before,
-.spine.vol::after {
+.spine.vol::before {
   content: "";
   position: absolute;
   left: 14%;
   right: 14%;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
+  top: 26%;
+  opacity: .75;
 }
-.spine.vol::before { top: 26%; opacity: .75; }
-.spine.vol::after  { top: 32%; opacity: .45; }
 .spine.planned {
   background: linear-gradient(180deg, rgba(184,145,80,.09), rgba(184,145,80,.03));
   border: 1px dashed rgba(184,145,80,.22);
@@ -390,6 +400,22 @@ section.block + section.block { border-top: 1px solid var(--gold-faint); }
 .shelf-card:hover .spine.planned,
 .shelf-card[aria-expanded="true"] .spine.planned {
   border-color: rgba(184,145,80,.35);
+}
+/* 個別の本にホバー/フォーカスしたとき、その本だけ強調 */
+a.spine.vol:hover,
+a.spine.vol:focus-visible {
+  transform: translateY(-10px);
+  filter: brightness(1.18) drop-shadow(0 4px 6px rgba(0,0,0,.5));
+  outline: none;
+}
+a.spine.vol:focus-visible {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 0 0 2px var(--gold-bright);
+}
+.spine.planned:hover {
+  border-color: var(--gold);
+  background: linear-gradient(180deg, rgba(184,145,80,.18), rgba(184,145,80,.06));
 }
 
 .shelf-board {
@@ -719,9 +745,9 @@ footer.site {
   .book { grid-template-columns: 3rem 1fr; gap: 1rem; padding: 1.2rem 1.2rem; }
   .book .spine { font-size: 1.4rem; padding-top: .3rem; }
 
-  /* スマホでは書架の余裕を活かして背表紙を少し太く */
-  .spines { gap: 9px; height: 84px; padding: 0 .5rem; }
-  .spine { flex: 0 0 28px; }
+  /* スマホでは書架の余裕を活かして背表紙を少し太く、間隔も広く */
+  .spines { gap: 12px; height: 88px; padding: 0 .5rem; }
+  .spine { flex: 0 0 32px; }
 
   .shelf-head { padding: 1.1rem 1.2rem 1.2rem; }
   .shelf-body-inner { padding: 0 1.2rem 1.4rem; }
