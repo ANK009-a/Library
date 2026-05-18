@@ -360,6 +360,7 @@ section.block + section.block { border-top: 1px solid var(--gold-faint); }
   text-decoration: none;
   color: inherit;
   display: block;
+  overflow: hidden;
 }
 a.spine.vol { cursor: pointer; }
 .spine.planned { cursor: pointer; }
@@ -377,22 +378,34 @@ a.spine.vol { cursor: pointer; }
     inset 0 1px 0 rgba(255,255,255,.06),
     0 1px 0 rgba(0,0,0,.6);
 }
-.spine.vol::before {
-  content: "";
-  position: absolute;
-  left: 14%;
-  right: 14%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
-  top: 26%;
-  opacity: .75;
-}
 .spine.planned {
   background: linear-gradient(180deg, rgba(184,145,80,.09), rgba(184,145,80,.03));
   border: 1px dashed rgba(184,145,80,.22);
   border-bottom: none;
   border-radius: 1px 1px 0 0;
 }
+/* 縦書きの書名 ── 1文字幅の細い箱に流して上から1文字ずつ並ぶ */
+.spine-title {
+  position: absolute;
+  top: .4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1em;
+  font-family: "Shippori Mincho", "Noto Serif JP", serif;
+  font-size: .62rem;
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: 0;
+  word-break: break-all;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(0,0,0,.65);
+  pointer-events: none;
+  z-index: 1;
+  max-height: calc(100% - .65rem);
+  overflow: hidden;
+}
+a.spine.vol .spine-title { color: rgba(232, 211, 156, 0.95); }
+.spine.planned .spine-title { color: rgba(212, 184, 120, 0.55); }
 .shelf-card:hover .spine.vol,
 .shelf-card[aria-expanded="true"] .spine.vol {
   transform: translateY(-4px);
@@ -748,6 +761,7 @@ footer.site {
   /* スマホでは書架の余裕を活かして背表紙を少し太く、間隔も広く */
   .spines { gap: 12px; height: 88px; padding: 0 .5rem; }
   .spine { flex: 0 0 32px; }
+  .spine-title { font-size: .74rem; top: .55rem; }
 
   .shelf-head { padding: 1.1rem 1.2rem 1.2rem; }
   .shelf-body-inner { padding: 0 1.2rem 1.4rem; }
