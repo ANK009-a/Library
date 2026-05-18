@@ -923,6 +923,55 @@ body {
   .masthead .meta { margin-top: 2.2rem; }
 }
 
+/* ============================================================
+   TOC: make the list compact enough to live on a single page
+   ============================================================ */
+.toc {
+  padding: 1.4rem 1.2rem;
+  margin: 0;
+}
+.toc::before {
+  display: none;  /* drop the floating 目次 label in tategaki */
+}
+.toc h3,
+.toc > h2 {
+  display: none;
+}
+.toc > ol { padding: 0; margin: 0; }
+.toc > ol > li {
+  padding: 6px 0;
+  padding-left: 0;
+  padding-inline-start: 0;
+  border-bottom: none;
+  border-inline-end: 1px dashed var(--rule-soft);
+  margin-inline-end: 1rem;
+  position: relative;
+  min-height: 0;
+}
+.toc > ol > li:last-child { border-inline-end: none; margin-inline-end: 0; }
+.toc > ol > li::before {
+  content: counter(toc-counter, decimal-leading-zero) "  ";
+  position: static;
+  left: auto; top: auto;
+  display: inline;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--accent);
+  margin: 0;
+}
+.toc a {
+  font-size: 14px;
+  letter-spacing: .02em;
+  line-height: 1.55;
+}
+.toc .toc-sub {
+  display: block;
+  font-size: 11px;
+  margin-top: 4px;
+  letter-spacing: .04em;
+}
+
 </style>
 </head>
 <body>
